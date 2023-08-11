@@ -1,0 +1,15 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+  {{ block.super }}
+  
+  <div class="module">
+    <h2>Product Images</h2>
+    <ul>
+      {% for image in product.productimage_set.all %}
+        <li><img src="{{ image.image.url }}" alt="Image"></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% load static %}
+{% include 'frontend/includes/header.html' %}
+ 
+
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-12 text-center">
+                    <h2 class="breadcrumb-title">Blog Grid</h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="{% url 'frontend:index' %}">Home</a></li>
+                        <li class="breadcrumb-item active">Blog Grid</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+
+    <!-- Blog Area Start -->
+    <div class="blog-grid pb-100px pt-100px main-blog-page single-blog-page">
+        <div class="container">
+            <div class="row">
+                {% for i in blogs %}
+                <div class="col-lg-6 col-md-6 col-xl-4 mb-50px">
+                    <div class="single-blog">
+                        <div class="blog-image">
+                            <a href="{% url 'blog:blog_details' i.id %}">
+                                {% if  i.title_image %}
+                                <img src="{{i.title_image.url}}"  class="img-responsive w-100" alt=""></a>
+                                 {% else %}
+                                <img class="img-fluid h-auto" src="{% static 'assets/images/default.jpg'  %}" alt="blog" />
+                                {% endif %}
+                        </div>
+                        <div class="blog-text">
+                            <div class="blog-athor-date">
+                                <a class="blog-date height-shape" href="#"><i class="fa fa-calendar"
+                                        aria-hidden="true"></i> {{i.created_on | date}}</a>
+                                <a class="blog-mosion" href="#"><i class="fa fa-commenting" aria-hidden="true"></i> {{i.seen}}</a>
+                            </div>
+                            <h5 class="blog-heading"><a class="blog-heading-link"
+                                    href="{% url 'blog:blog_details' i.id %}"> {{ i.title|slice:":100" }}{% if i.title|length > 100 %} ...{% endif %}</h5>
+
+                            <p>{{ i.first_description|slice:":100" }}{% if i.first_description|length > 100 %} ...{% endif %}</p>
+
+                            <a href="{% url 'blog:blog_details' i.id %}" class="btn btn-primary blog-btn"> Read More<i class="fa fa-arrow-right ml-5px"
+                                    aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+            </div>
+
+            <!--  Pagination Area Start -->
+                <!-- div class="pro-pagination-style text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="pages">
+                    <ul>
+                        <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a></li>
+                        <li class="li"><a class="page-link active" href="#">1</a></li>
+                        <li class="li"><a class="page-link" href="#">2</a></li>
+                        <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> -->
+            <!--  Pagination Area End -->
+        </div>
+    </div>
+    <!-- Blag Area End -->
+    {% include 'frontend/includes/footer.html' %}
