@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from .models import Product, Color
 from django.forms.widgets import CheckboxSelectMultiple
 from django import forms
+from PIL import Image
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -56,9 +57,23 @@ class ProductForm(forms.ModelForm):
 
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ('name','sub_category','quantity','price','materials','created_on')
+    list_display = ('name','sub_category','quantity','price','materials','display_colors','created_on')
     inlines = [ProductImageInline]
 
+    def display_colors(self, obj):
+        return ", ".join([color.code for color in obj.colors.all()])
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        for image_obj in obj.images.all():
+            img = Image.open(image_obj.image.path)
+            target_size = (270, 310)
+            img.thumbnail(target_size)
+            img = img.crop((0, 0, target_size[0], target_size[1]))
+            img.save(image_obj.image.path)
+
+    display_colors.short_description = 'Colors'
 
 
 admin.site.register(Product, ProductAdmin)

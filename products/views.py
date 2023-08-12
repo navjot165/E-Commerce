@@ -2,8 +2,10 @@ from django.shortcuts import render
 from .models import *
 
 
-def shop_list(request):
-    return render(request, 'products/shop-left-sidebar.html')
+def shop_list(request,id):
+    product = Product.objects.filter(sub_category__category_id = id )
+    print(product)
+    return render(request, 'products/shop-left-sidebar.html',{"product":product})
 
 def shop_product_detail(request,id):
     product = Product.objects.get(id = id )

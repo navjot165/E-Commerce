@@ -81,7 +81,7 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="{% static 'frontend:index' %}">Jesco</a>
                                         </li>
-                                        <li class="li"><a class="single-link" href="{% url 'products:shop' %}">Shop</a></li>
+                                        <li class="li"><a class="single-link" href="{% url 'products:shop' 1 %}">Shop</a></li>
                                         <li class="li"><a class="single-link" href="contact.html">Contact us</a></li>
                                         <li class="li"><a class="single-link" href="{% url 'accounts:login' %}">Log in</a></li>
                                     </ul>
@@ -337,8 +337,8 @@
 <script src="{% static 'assets/js/plugins/ajax-mail.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-*******************" crossorigin="anonymous">
-{% comment %} <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}" ></script> {% endcomment %}
-{% comment %} <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script> {% endcomment %}
+<script src="{% static 'assets/js/jquery-3.2.1.min.js' %}" ></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 
 <script>
 $(document).ready(function() {

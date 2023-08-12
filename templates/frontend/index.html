@@ -16,7 +16,7 @@
                                     <span class="category">Offer 2021</span>
                                     <h2 class="title-1">Sale Up To </h2>
                                     <h2 class="title-2"><span>50%</span> Off</h2>
-                                    <a href="shop-left-sidebar.html" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
+                                    <a href="{% url 'products:shop' 1 %}" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
                                             class="fa fa-shopping-basket ml-15px" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -41,7 +41,7 @@
                                     <span class="category">Offer 2021</span>
                                     <h2 class="title-1">Sale Up To </h2>
                                     <h2 class="title-2"><span>50%</span> Off</h2>
-                                    <a href="shop-left-sidebar.html" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
+                                    <a href="{% url 'products:shop' 1 %}" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
                                             class="fa fa-shopping-basket ml-15px" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
             <div class="row">
                 {% for cat_id,cat_name,cat_image,cat_items in data %}
                 <div class="single-col ">
-                    <a href="shop-left-sidebar.html" class="single-banner">
+                    <a href="{% url 'products:shop' 1 %}" class="single-banner">
                         <img src="{{cat_image}}" alt="">
                         <div class="item-disc">
                             <span class="item-title">{{cat_name}}</span>
@@ -91,7 +91,7 @@
                         <img src="{% static 'assets/images/banner/2.jpg' %}" alt="">
                         <div class="item-disc">
                             <h2 class="title">#bestsellers</h2>
-                            <a href="shop-left-sidebar.html" class="shop-link">Shop Now</a>
+                            <a href="{% url 'products:shop' 1 %}" class="shop-link">Shop Now</a>
                         </div>
                     </div>
                 </div> {% endcomment %}

@@ -11,7 +11,7 @@ app_name = 'products'
 
 
 urlpatterns = [
-    re_path(r'^shop$', shop_list, name='shop'),
+    re_path(r'^shop/(?P<id>\d+)$', shop_list, name='shop'),
     re_path(r'^shop-product-detail/(?P<id>\d+)$', shop_product_detail, name='shop_product_detail'),
     re_path(r'^cart-detail$', cart_details, name='cart_details'),
     re_path(r'^wishlist$', wishlist_details, name='wishlist'),

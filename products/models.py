@@ -1,10 +1,11 @@
 from django.db import models
 
+from colorfield.fields import ColorField
 
 
 class Color(models.Model):
     name = models.CharField(max_length=50)
-    code = models.CharField(max_length=50)
+    code = ColorField()
     
     def __str__(self):
         return self.code
