@@ -9,7 +9,7 @@
                     <h2 class="breadcrumb-title">Shop</h2>
                     <!-- breadcrumb-list start -->
                     <ul class="breadcrumb-list">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'frontend:index' %}">Home</a></li>
                         <li class="breadcrumb-item active">Shop</li>
                     </ul>
                     <!-- breadcrumb-list end -->
@@ -28,7 +28,7 @@
                     <!-- Shop Top Area Start -->
                     <div class="shop-top-bar d-flex">
                         <!-- Left Side start -->
-                        <p><span>12</span> Product Found of <span>30</span></p>
+                        <p><span>{{products.count}}</span> Product Found  <span></span></p>
                         <!-- Left Side End -->
                         <div class="shop-tab nav">
                             <a class="active" href="#shop-grid" data-bs-toggle="tab">
@@ -44,14 +44,15 @@
                                 <p>Sort By:</p>
                             </div>
                             <div class="shop-select">
-                                <select class="shop-sort">
-                                    <option data-display="Relevance">Relevance</option>
-                                    <option value="1"> Name, A to Z</option>
-                                    <option value="2"> Name, Z to A</option>
-                                    <option value="3"> Price, low to high</option>
-                                    <option value="4"> Price, high to low</option>
-                                </select>
-
+                                <form id="filter-form" action="{% url 'products:shop' id %}?search={{search}}&sort={{sort}}" method="get">
+                                    <select class="shop-sort" name="sort"  onchange="submitFilterForm(this)">
+                                        <option > Sort products</option>
+                                        <option {% if sort == "1" %}selected{% endif %} value="1"> Name, A to Z</option>
+                                        <option {% if sort == "2" %}selected{% endif %}  value="2"> Name, Z to A</option>
+                                        <option {% if sort == "3" %}selected{% endif %}  value="3"> Price, low to high</option>
+                                        <option {% if sort == "4" %}selected{% endif %}  value="4"> Price, high to low</option>
+                                    </select>
+                                </form>
                             </div>
                         </div>
                         <!-- Right Side End -->
@@ -67,120 +68,48 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" id="shop-grid">
                                         <div class="row mb-n-30px">
-                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px" data-aos="fade-up"
-                                                data-aos-delay="200">
-                                                <!-- Single Prodect -->
-                                                <div class="product">
-                                                    <div class="thumb">
-                                                        <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                            <img src="{% static 'assets/images/product-image/1.jpg' %}"
-                                                                alt="Product" />
-                                                            <img class="hover-image"
-                                                                src="{% static 'assets/images/product-image/1.jpg' %}" alt="Product" />
-                                                        </a>
-                                                        <span class="badges">
-                                                            <span class="new">New</span>
-                                                        </span>
-                                                        <div class="actions">
-                                                            <a href="wishlist.html" class="action wishlist"
-                                                                title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                            <a href="#" class="action quickview"
-                                                                data-link-action="quickview" title="Quick view"
-                                                                data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                                                    class="pe-7s-search"></i></a>
-                                                            <a href="compare.html" class="action compare"
-                                                                title="Compare"><i class="pe-7s-refresh-2"></i></a>
-                                                        </div>
-                                                        <button title="Add To Cart" class=" add-to-cart">Add
-                                                            To Cart</button>
-                                                    </div>
-                                                    <div class="content">
-                                                        <span class="ratings">
-                                                            <span class="rating-wrap">
-                                                                <span class="star" style="width: 100%"></span>
-                                                            </span>
-                                                            <span class="rating-num">( 5 Review )</span>
-                                                        </span>
-                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Women's
-                                                                Elizabeth Coat
-                                                            </a>
-                                                        </h5>
-                                                        <span class="price">
-                                                            <span class="new">$38.50</span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px" data-aos="fade-up"
-                                                data-aos-delay="400">
-                                                <!-- Single Prodect -->
-                                                <div class="product">
-                                                    <div class="thumb">
-                                                        <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                            <img src="{% static 'assets/images/product-image/2.jpg'%}"
-                                                                alt="Product" />
-                                                            <img class="hover-image"
-                                                                src="{% static 'assets/images/product-image/2.jpg'%}" alt="Product" />
-                                                        </a>
-                                                        <span class="badges">
-                                                            <span class="sale">-10%</span>
-                                                            <span class="new">New</span>
-                                                        </span>
-                                                        <div class="actions">
-                                                            <a href="wishlist.html" class="action wishlist"
-                                                                title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                            <a href="#" class="action quickview"
-                                                                data-link-action="quickview" title="Quick view"
-                                                                data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                                                    class="pe-7s-search"></i></a>
-                                                            <a href="compare.html" class="action compare"
-                                                                title="Compare"><i class="pe-7s-refresh-2"></i></a>
-                                                        </div>
-                                                        <button title="Add To Cart" class=" add-to-cart">Add
-                                                            To Cart</button>
-                                                    </div>
-                                                    <div class="content">
-                                                        <span class="ratings">
-                                                            <span class="rating-wrap">
-                                                                <span class="star" style="width: 80%"></span>
-                                                            </span>
-                                                            <span class="rating-num">( 4 Review )</span>
-                                                        </span>
-                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Ardene
-                                                                Microfiber
-                                                                Tights</a>
-                                                        </h5>
-                                                        <span class="price">
-                                                            <span class="new">$38.50</span>
-                                                            <span class="old">$48.50</span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <!-- Single Prodect -->
-                                            </div>
+                                            {% for product in products %}
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 mb-30px" data-aos="fade-up"
                                                 data-aos-delay="600">
                                                 <!-- Single Prodect -->
                                                 <div class="product">
                                                     <div class="thumb">
-                                                        <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                            <img src="{% static 'assets/images/product-image/3.jpg' %}"
-                                                                alt="Product" />
-                                                            <img class="hover-image"
-                                                                src="{% static 'assets/images/product-image/3.jpg' %}" alt="Product" />
+                                                        <a href="{% url 'products:shop_product_detail' product.id %}" class="image">
+                                                            
+                                                            {% with product_image=product.productimage_set.first %}
+                                                                {% if product_image %}
+                                                                    <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                                {% else %}
+                                                                    <p>No image available</p>
+                                                                {% endif %}
+                                                            {% endwith %}
+
+                                                            {% with product_image=product.productimage_set.first %}
+                                                                {% if product_image %}
+                                                                    <img class="hover-image" src="{{ product_image.image.url }}"
+                                                                    alt="{{ product.name }}" />
+                                                                {% else %}
+                                                                    <p>No image available</p>
+                                                                {% endif %}
+                                                            {% endwith %}
                                                         </a>
                                                         <span class="badges">
-                                                            <span class="sale">-7%</span>
+                                                           
+                                                            <span class="sale"> 
+                                                                {% if product.calculate_discount_percentage == 0 %}
+                                                                {% else %}
+                                                                {{ product.calculate_discount_percentage|floatformat:1 }}%</span>
+                                                                {% endif %}
                                                         </span>
                                                         <div class="actions">
-                                                            <a href="wishlist.html" class="action wishlist"
-                                                                title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                            <a href="#" class="action quickview"
+                                                            {% comment %} <a href="{% url 'products:wishlist' %}" class="action wishlist"
+                                                                title="Wishlist"><i class="pe-7s-like"></i></a> {% endcomment %}
+                                                            {% comment %} <a href="#" class="action quickview"
                                                                 data-link-action="quickview" title="Quick view"
                                                                 data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                                                                     class="pe-7s-search"></i></a>
                                                             <a href="compare.html" class="action compare"
-                                                                title="Compare"><i class="pe-7s-refresh-2"></i></a>
+                                                                title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                         </div>
                                                         <button title="Add To Cart" class=" add-to-cart">Add
                                                             To Cart</button>
@@ -192,148 +121,54 @@
                                                             </span>
                                                             <span class="rating-num">( 0 Review )</span>
                                                         </span>
-                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Women's Long
-                                                                Sleeve
-                                                                Shirts</a></h5>
-                                                        <span class="price">
-                                                            <span class="new">$30.50</span>
-                                                            <span class="old">$38.00</span>
+                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">{{product.name}}</a></h5>
+                                                        <span class="price">   
+                                                            {% if product.discount %} 
+                                                                <span class="new">${{product.discount}}</span>
+                                                                <span class="old">${{product.price}}</span>
+                                                            {% else %}
+                                                                <span class="new">${{product.price}}</span>
+                                                            {% endif %}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
+                                            {% endfor %}
                                             
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="shop-list">
+                                        {% for product in products %}
                                         <div class="shop-list-wrapper">
                                             <div class="row">
                                                 <div class="col-md-5 col-lg-5 col-xl-4">
                                                     <div class="product">
                                                         <div class="thumb">
-                                                            <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                                <img src="{% static 'assets/images/product-image/1.jpg' %}"
-                                                                    alt="Product" />
-                                                                <img class="hover-image"
-                                                                    src="{% static 'assets/images/product-image/1.jpg' %}"
-                                                                    alt="Product" />
+                                                            <a href="{% url 'products:shop_product_detail' product.id  %}" class="image">
+                                                                {% with product_image=product.productimage_set.first %}
+                                                                    {% if product_image %}
+                                                                        <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                                    {% else %}
+                                                                        <p>No image available</p>
+                                                                    {% endif %}
+                                                                {% endwith %}
+
+                                                                {% with product_image=product.productimage_set.first %}
+                                                                    {% if product_image %}
+                                                                        <img class="hover-image" src="{{ product_image.image.url }}"
+                                                                        alt="{{ product.name }}" />
+                                                                    {% else %}
+                                                                        <p>No image available</p>
+                                                                    {% endif %}
+                                                                {% endwith %}
                                                             </a>
                                                             <span class="badges">
-                                                                <span class="new">New</span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7 col-lg-7 col-xl-8">
-                                                    <div class="content-desc-wrap">
-                                                        <div class="content">
-                                                            <span class="ratings">
-                                                                <span class="rating-wrap">
-                                                                    <span class="star" style="width: 100%"></span>
+                                                                <span class="sale">
+                                                                    {% if product.calculate_discount_percentage == 0 %}
+                                                                {% else %}
+                                                                {{ product.calculate_discount_percentage|floatformat:1 }}%</span>
+                                                                {% endif %}
                                                                 </span>
-                                                                <span class="rating-num">( 5 Review )</span>
-                                                            </span>
-                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Women's
-                                                                    Elizabeth Coat</a></h5>
-                                                            <p>More room to move.With 80GB or 160GB of storage and up to
-                                                                40 hours of battery life, the new iPod classic lets you
-                                                                enjoy up to 40,000 songs or..</p>
-                                                        </div>
-                                                        <div class="box-inner">
-                                                            <span class="price">
-                                                                <span class="new">$38.50</span>
-                                                            </span>
-                                                            <div class="actions">
-                                                                <a href="wishlist.html" class="action wishlist"
-                                                                    title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                                <a href="#" class="action quickview"
-                                                                    data-link-action="quickview" title="Quick view"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModal"><i
-                                                                        class="pe-7s-search"></i></a>
-                                                                <a href="compare.html" class="action compare"
-                                                                    title="Compare"><i class="pe-7s-refresh-2"></i></a>
-                                                            </div>
-                                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                                To Cart</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="shop-list-wrapper">
-                                            <div class="row">
-                                                <div class="col-md-5 col-lg-5 col-xl-4">
-                                                    <div class="product">
-                                                        <div class="thumb">
-                                                            <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                                <img src="{% static 'assets/images/product-image/2.jpg'%}"
-                                                                    alt="Product" />
-                                                                <img class="hover-image"
-                                                                    src="{% static 'assets/images/product-image/2.jpg'%}"
-                                                                    alt="Product" />
-                                                            </a>
-                                                            <span class="badges">
-                                                                <span class="sale">-10%</span>
-                                                                <span class="new">New</span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-7 col-lg-7 col-xl-8">
-                                                    <div class="content-desc-wrap">
-                                                        <div class="content">
-                                                            <span class="ratings">
-                                                                <span class="rating-wrap">
-                                                                    <span class="star" style="width: 80%"></span>
-                                                                </span>
-                                                                <span class="rating-num">( 4 Review )</span>
-                                                            </span>
-                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Ardene
-                                                                    Microfiber
-                                                                    Tights</a>
-                                                            </h5>
-                                                            <p>More room to move.With 80GB or 160GB of storage and up to
-                                                                40 hours of battery life, the new iPod classic lets you
-                                                                enjoy up to 40,000 songs or..</p>
-                                                        </div>
-                                                        <div class="box-inner">
-                                                            <span class="price">
-                                                                <span class="new">$38.50</span>
-                                                                <span class="old">$48.50</span>
-                                                            </span>
-                                                            <div class="actions">
-                                                                <a href="wishlist.html" class="action wishlist"
-                                                                    title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                                <a href="#" class="action quickview"
-                                                                    data-link-action="quickview" title="Quick view"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModal"><i
-                                                                        class="pe-7s-search"></i></a>
-                                                                <a href="compare.html" class="action compare"
-                                                                    title="Compare"><i class="pe-7s-refresh-2"></i></a>
-                                                            </div>
-                                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                                To Cart</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="shop-list-wrapper">
-                                            <div class="row">
-                                                <div class="col-md-5 col-lg-5 col-xl-4">
-                                                    <div class="product">
-                                                        <div class="thumb">
-                                                            <a href="{% url 'products:shop_product_detail' 1 %}" class="image">
-                                                                <img src="{% static 'assets/images/product-image/3.jpg' %}"
-                                                                    alt="Product" />
-                                                                <img class="hover-image"
-                                                                    src="{% static 'assets/images/product-image/3.jpg' %}"
-                                                                    alt="Product" />
-                                                            </a>
-                                                            <span class="badges">
-                                                                <span class="sale">-7%</span>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -347,29 +182,28 @@
                                                                 </span>
                                                                 <span class="rating-num">( 0 Review )</span>
                                                             </span>
-                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">Women's
-                                                                    Long
-                                                                    Sleeve
-                                                                    Shirts</a></h5>
-                                                            <p>More room to move.With 80GB or 160GB of storage and up to
-                                                                40 hours of battery life, the new iPod classic lets you
-                                                                enjoy up to 40,000 songs or..</p>
+                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">{{ product.name }}</a></h5>
+                                                            <p>{{product.description | truncatechars:200}}</p>
                                                         </div>
                                                         <div class="box-inner">
                                                             <span class="price">
-                                                                <span class="new">$38.50</span>
-                                                                <span class="old">$45.00</span>
+                                                                {% if product.discount %} 
+                                                                    <span class="new">${{product.discount}}</span>
+                                                                    <span class="old">${{product.price}}</span>
+                                                                {% else %}
+                                                                    <span class="new">${{product.price}}</span>
+                                                                {% endif %}
                                                             </span>
                                                             <div class="actions">
-                                                                <a href="wishlist.html" class="action wishlist"
-                                                                    title="Wishlist"><i class="pe-7s-like"></i></a>
-                                                                <a href="#" class="action quickview"
+                                                                {% comment %} <a href="{% url 'products:wishlist' %}" class="action wishlist"
+                                                                    title="Wishlist"><i class="pe-7s-like"></i></a> {% endcomment %}
+                                                                {% comment %} <a href="#" class="action quickview"
                                                                     data-link-action="quickview" title="Quick view"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#exampleModal"><i
                                                                         class="pe-7s-search"></i></a>
                                                                 <a href="compare.html" class="action compare"
-                                                                    title="Compare"><i class="pe-7s-refresh-2"></i></a>
+                                                                    title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                             </div>
                                                             <button title="Add To Cart" class=" add-to-cart">Add
                                                                 To Cart</button>
@@ -378,6 +212,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
                                    
                                     </div>
                                 </div>
@@ -386,10 +221,10 @@
                         <!-- Tab Content Area End -->
 
                         <!--  Pagination Area Start -->
-                        <div class="load-more-items text-center mb-md-60px mb-lm-60px mt-30px0px" data-aos="fade-up">
+                        {% comment %} <div class="load-more-items text-center mb-md-60px mb-lm-60px mt-30px0px" data-aos="fade-up">
                             <a href="#" class="btn btn-lg btn-primary btn-hover-dark m-auto"> Load More <i
                                     class="fa fa-refresh ml-15px" aria-hidden="true"></i></a>
-                        </div>
+                        </div> {% endcomment %}
                         <!--  Pagination Area End -->
                     </div>
                     <!-- Shop Bottom Area End -->
@@ -398,42 +233,44 @@
                 <div class="col-lg-3 order-lg-first col-md-12 order-md-last mb-md-60px mb-lm-60px">
                     <div class="shop-sidebar-wrap">
                         <!-- Sidebar single item -->
+                        
                         <div class="sidebar-widget-search">
-                            <form id="widgets-searchbox" action="#">
-                                <input class="input-field" type="text" placeholder="Search">
+                            <form id="widgets-searchbox" action="{% url 'products:shop' id %}?search={{search}}&sort={{sort}}">
+                                <input class="input-field" type="text" name="search" value="{{search}}" placeholder="Search">
                                 <button class="widgets-searchbox-btn" type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </form>
                         </div>
                         <!-- Sidebar single item -->
-                        <div class="sidebar-widget mt-8">
-                            <h4 class="sidebar-title">Price Filter</h4>
-                            <div class="price-filter">
-                                <div class="price-slider-amount">
-                                    <input type="text" id="amount" class="p-0 h-auto lh-1" name="price"
-                                        placeholder="Add Your Price" />
+                        <form id="filter-price" action="{% url 'products:shop' id %}?search={{search}}&sort={{sort}}&cat={{cat}}" method="get">
+                            <div class="sidebar-widget mt-8">
+                                <h4 class="sidebar-title">Price Filter</h4>
+                                <div class="price-filter">
+                                    <div class="price-slider-amount">
+                                        <input type="text" id="amount" class="p-0 h-auto lh-1" name="price" placeholder="Add Your Price">
+                                    </div>
+                                    <div id="slider-range" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                        <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
+                                        <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
+                                        <span tabindex="20" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
+                                    </div>
                                 </div>
-                                <div id="slider-range"></div>
                             </div>
-                        </div>
+                        </form>
                         <!-- Sidebar single item -->
                         <div class="sidebar-widget">
                             <h4 class="sidebar-title">Category</h4>
                             <div class="sidebar-widget-category">
                                 <ul>
-                                    <li><a href="#" class="selected m-0">Accesasories <span>(6)</span> </a></li>
-                                    <li><a href="#" class="">Computer <span>(4)</span> </a></li>
-                                    <li><a href="#" class="">Covid-19 <span>(2)</span> </a></li>
-                                    <li><a href="#" class="">Electronics <span>(6)</span> </a></li>
-                                    <li><a href="#" class="">Frame Sunglasses <span>(12)</span> </a></li>
-                                    <li><a href="#" class="">Furniture <span>(7)</span> </a></li>
-                                    <li><a href="#" class="">Genuine Leather <span>(9)</span> </a></li>
+                                    {% for sub_cat_id,sub_cat_name,subcat_items in subcat %}
+                                        <li><a href="{% url 'products:shop' id %}?search={{search}}&sort={{sort}}&cat={{sub_cat_id}}" class="selected m-1">{{sub_cat_name}} <span>({{subcat_items}})</span> </a></li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>
                         <!-- Sidebar single item -->
-                        <div class="sidebar-widget">
+                        {% comment %} <div class="sidebar-widget">
                             <h4 class="sidebar-title">Color</h4>
                             <div class="sidebar-widget-list color">
                                 <ul>
@@ -443,21 +280,22 @@
                                     <li><a class="pink" href="#"></a></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         <!-- Sidebar single item -->
                         <div class="sidebar-widget">
                             <h4 class="sidebar-title">Size</h4>
-                            <div class="sidebar-widget-list size">
+                            <div class="sidebar-widget-tag">
                                 <ul>
-                                    <li><a class="active-2 gray" href="#">S</a></li>
-                                    <li><a class="gray" href="#">M</a></li>
-                                    <li><a class="gray" href="#">L</a></li>
-                                    <li><a class="gray" href="#">XL</a></li>
+                                    {% for i in size %}
+                                    <li><a class="active-2 gray" href="{% url 'products:shop' id %}?search={{search}}&sort={{sort}}&cat={{sub_cat_id}}&size={{i.id}}">{{i.name}}</a></li>
+                                    {% endfor %}
+                                    
                                 </ul>
                             </div>
                         </div>
+                        </form>
                         <!-- Sidebar single item -->
-                        <div class="sidebar-widget tag">
+                        {% comment %} <div class="sidebar-widget tag">
                             <h4 class="sidebar-title">Tags</h4>
                             <div class="sidebar-widget-tag">
                                 <ul>
@@ -469,14 +307,14 @@
                                     <li><a href="#">Dress</a></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                         <!-- Sidebar single item -->
                         <div class="sidebar-widget-image">
                             <div class="single-banner">
-                                <img src="assets/images/banner/2.jpg" alt="">
+                                <img src="{% static 'assets/images/banner/2.png' %}" alt="">
                                 <div class="item-disc">
                                     <h2 class="title">#bestsellers</h2>
-                                    <a href="single-product-variable.html" class="shop-link">Shop Now</a>
+                                    <a href="" class="shop-link">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -488,3 +326,33 @@
     </div>
     <!-- Shop Page End  -->
     {% include 'frontend/includes/footer.html' %}
+    
+    <script>
+        function submitFilterForm(selectElement) {
+            selectElement.closest('form').submit();
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Initialize the slider
+            $("#slider-range").slider({
+                range: true,
+                min: 0,
+                max: 7000, // Set your maximum price range value
+                values: [{{s_p}}, {{l_p}}], // Initial values
+                slide: function(event, ui) {
+                    $("#amount").val("" + ui.values[0] + "-" + ui.values[1]);
+                },
+                change: function(event, ui) {
+                    // Submit the form when slider value changes
+                    $("#filter-price").submit();
+                }
+            });
+            
+            // Initialize the input value based on the initial slider values
+            const initialValues = $("#slider-range").slider("values");
+            $("#amount").val("$" + initialValues[0] + " - $" + initialValues[1]);
+        });
+    </script>
+    
+    

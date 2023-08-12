@@ -60,13 +60,20 @@ class Product(models.Model):
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     sizes = models.ManyToManyField(Size)
     colors = models.ManyToManyField(Color)
-    
+
+    def calculate_discount_percentage(self):
+        if self.price > 0:
+            discount = self.price - self.discount if self.discount else 0
+            return (discount / self.price) * 100
+        return 0
+
     class Meta:
         managed = True
         db_table = 'tbl_product'
 
     def __str__(self):
         return self.name
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

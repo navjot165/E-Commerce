@@ -65,8 +65,9 @@ class ProductAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
+        product_images = ProductImage.objects.filter(product = obj)
 
-        for image_obj in obj.images.all():
+        for image_obj in product_images:
             img = Image.open(image_obj.image.path)
             target_size = (270, 310)
             img.thumbnail(target_size)

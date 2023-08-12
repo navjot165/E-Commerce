@@ -1,6 +1,10 @@
 {% load static %}
 {% include 'frontend/includes/header.html' %}
-
+<style>
+    .active-color {
+        border-color : #000 !important
+    }
+</style>
 
     <!-- breadcrumb-area start -->
     <div class="breadcrumb-area">
@@ -57,7 +61,13 @@
                         <h2>{{data.name}}</h2>
                         <div class="pricing-meta">
                             <ul>
-                                <li class="old-price not-cut">${{data.price}}</li>
+                                <li class="old-price not-cut">
+                                    {% if data.discount %} 
+                                        <span >${{data.discount}}</span>
+                                    {% else %}
+                                        <span >${{data.price}}</span>
+                                    {% endif %}
+                                </li>
                             </ul>
                         </div>
                         <div class="pro-details-rating-wrap">
@@ -75,10 +85,11 @@
                             <span>Color</span>
                             <div class="pro-details-color">
                                 <ul>
-                                    <li><a class="active-color yellow" href="#"></a></li>
-                                    <li><a class="black" href="#"></a></li>
-                                    <li><a class="red" href="#"></a></li>
-                                    <li><a class="pink" href="#"></a></li>
+                                    {% comment %} <li><a class="active-color yellow" href="#"></a></li> {% endcomment %}
+
+                                    {% for size in data.colors.all %}
+                                    <li><a class="" href="#" style="background-color:{{size.code}} !important"></a></li>
+                                {% endfor %}
                                 </ul>
                             </div>
                         </div>
@@ -88,7 +99,6 @@
                             <div class="pro-details-size">
                                 <ul>
                                     {% for size in data.sizes.all %}
-                                        <li></li>
                                         <li><a class="active-size gray" href="#">{{ size.name }}</a></li>
                                     {% endfor %}
                                    
@@ -106,7 +116,7 @@
                                     Cart</button>
                             </div>
                             <div class="pro-details-compare-wishlist pro-details-wishlist ">
-                                <a href="wishlist.html"><i class="pe-7s-like"></i></a>
+                                <a href="{% url 'products:wishlist' %}"><i class="pe-7s-like"></i></a>
                             </div>
                             <div class="pro-details-compare-wishlist pro-details-compare">
                                 <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>

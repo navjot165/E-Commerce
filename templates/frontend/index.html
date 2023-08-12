@@ -76,11 +76,11 @@
             <div class="row">
                 {% for cat_id,cat_name,cat_image,cat_items in data %}
                 <div class="single-col ">
-                    <a href="{% url 'products:shop' 1 %}" class="single-banner">
+                    <a href="{% url 'products:shop' cat_id %}" class="single-banner">
                         <img src="{{cat_image}}" alt="">
                         <div class="item-disc">
                             <span class="item-title">{{cat_name}}</span>
-                            <span class="item-amount">{{cat_items}}</span>
+                            <span class="item-amount">{{cat_items}} ITEMS</span>
                         </div>
                     </a>
                 </div>
@@ -214,7 +214,7 @@
                                                     <span class="new"></span>
                                                 </span>
                                                 <div class="actions">
-                                                    <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                    <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                             class="pe-7s-like"></i></a>
                                                     {% comment %} <a href="#" id="click_sp" class="action quickview" data-product-id="{{ product.id }}" 
                                                         title="Quick view" data-bs-toggle="modal"
@@ -277,7 +277,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -326,7 +326,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -368,7 +368,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -411,7 +411,7 @@
                                                 <span class="sale">-7%</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -452,7 +452,7 @@
                                                 <span class="new">Sale</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -494,7 +494,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -534,7 +534,7 @@
                                             <span class="badges">
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -575,7 +575,7 @@
                                             <span class="badges">
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -615,7 +615,7 @@
                                                 <span class="new">Sale</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -676,7 +676,7 @@
                                                 <span class="new">discounted</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"

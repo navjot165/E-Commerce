@@ -5,7 +5,7 @@ class Command(BaseCommand):
     help = 'Populate sizes and colors in the database'
 
     def handle(self, *args, **options):
-        sizes = ['Small', 'Medium', 'Large']
+        sizes = ['S', 'M', 'L','XL','XXL','XXXL']
         color_data = [
             {'code': '#FF0000'},
             {'code': '#0000FF'},
