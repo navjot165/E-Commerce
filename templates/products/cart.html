@@ -8,7 +8,7 @@
                     <h2 class="breadcrumb-title">Shop</h2>
                     <!-- breadcrumb-list start -->
                     <ul class="breadcrumb-list">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'frontend:index' %}">Home</a></li>
                         <li class="breadcrumb-item active">Cart</li>
                     </ul>
                     <!-- breadcrumb-list end -->
@@ -39,63 +39,36 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for i in cart_list %}
                                     <tr>
                                         <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px"
-                                                    src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
+                                            <a href="#">
+                                            {% with product_image=i.product.productimage_set.first %}
+                                                {% if product_image %}
+                                                    <img class="img-responsive ml-15px"  src="{{ product_image.image.url }}" alt="" /></a>
+                                                {% else %}
+                                                    <p>No images available for this product in the wishlist.</p>
+                                                {% endif %}
+                                            {% endwith %}
+                                                
                                         </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$60.00</span></td>
+                                        <td class="product-name"><a href="{% url 'products:shop_product_detail' i.product.id %}">{{i.product.name}}</a></td>
+                                        <td class="product-price-cart">$<span id="amount{{i.id}}" class="amount">{{i.price}}</span></td>
                                         <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton"
-                                                    value="1" />
+                                            {% comment %} <div class="cart-plus-minus">
+                                                <input onclick="UpdatePrice({{i.id}})" class="cart-plus-minus-box" type="text" name="qtybutton"
+                                                    value="{{i.quantity}}" />
+                                            </div> {% endcomment %}
+                                            <div class="cart-plus-minus" onclick="UpdatePrice({{i.id}})">
+                                                <input class="cart-plus-minus-box" onchange="UpdatePrice({{i.id}})" id="{{ i.id }}" type="text" name="qtybutton" value="{{i.quantity}}" />
                                             </div>
                                         </td>
-                                        <td class="product-subtotal">$70.00</td>
+                                        <td class="product-subtotal">$<span id="price{{i.id}}">{{i.total_price}}</span></td>
                                         <td class="product-remove">
-                                            <a href="#"><i class="fa fa-pencil"></i></a>
-                                            <a href="#"><i class="fa fa-times"></i></a>
+                                            <a onclick="return confirm('Are you sure you want to delete this product?')" href="{% url 'products:remove_to_cart' i.id %}"><i class="fa fa-times"></i></a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px"
-                                                    src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$50.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton"
-                                                    value="1" />
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">$80.00</td>
-                                        <td class="product-remove">
-                                            <a href="#"><i class="fa fa-pencil"></i></a>
-                                            <a href="#"><i class="fa fa-times"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px"
-                                                    src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$70.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton"
-                                                    value="1" />
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">$90.00</td>
-                                        <td class="product-remove">
-                                            <a href="#"><i class="fa fa-pencil"></i></a>
-                                            <a href="#"><i class="fa fa-times"></i></a>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -107,14 +80,14 @@
                                     </div>
                                     <div class="cart-clear">
                                         <button>Update Shopping Cart</button>
-                                        <a href="#">Clear Shopping Cart</a>
+                                        <a onclick="return confirm('Are you sure you want to clear shopping cart?')" href="{% url 'products:clear_cart' %}">Clear Shopping Cart</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-lm-30px">
+                        {% comment %} <div class="col-lg-4 col-md-6 mb-lm-30px">
                             <div class="cart-tax">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
@@ -156,8 +129,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-lm-30px">
+                        </div> {% endcomment %}
+                        {% comment %} <div class="col-lg-6 col-md-6 mb-lm-30px">
                             <div class="discount-code-wrapper">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
@@ -170,21 +143,22 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12 mt-md-30px">
+                        </div> {% endcomment %}
+                        <div class="col-lg-12 col-md-12 mt-md-30px">
                             <div class="grand-totall">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                 </div>
-                                <h5>Total products <span>$260.00</span></h5>
-                                <div class="total-shipping">
+                                <h5>Total products <span id="totalproduct" >${{cart_total}}</span></h5>
+                                <h5>Shipping price <span id="shipingcost">${{shipping_price}}</span></h5>
+                                {% comment %} <div class="total-shipping">
                                     <h5>Total shipping</h5>
                                     <ul>
                                         <li><input type="checkbox" /> Standard <span>$20.00</span></li>
                                         <li><input type="checkbox" /> Express <span>$30.00</span></li>
                                     </ul>
-                                </div>
-                                <h4 class="grand-totall-title">Grand Total <span>$260.00</span></h4>
+                                </div> {% endcomment %}
+                                <h4 class="grand-totall-title">Grand Total <span id="grandTotal">${{grand_total}}</span></h4>
                                 <a href="{% url 'products:checkout' %}">Proceed to Checkout</a>
                             </div>
                         </div>
@@ -196,3 +170,65 @@
     <!-- Cart Area End -->
 
     {% include 'frontend/includes/footer.html' %}
+    <script>
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+            var shipping_cost =  document.getElementById('shipingcost').innerHTML
+            var shipping_cost = shipping_cost.substr(1)
+            console.log(shipping_cost,">>>>>>>")
+            $(".product-subtotal").each(function() {
+                grandTotal += parseFloat($(this).text().substr(1)); 
+                grandTotals = grandTotal 
+            });
+            const shippingCost = parseFloat($("#shipingcost").text().replace("$", ""));
+            grandTotal += shippingCost;
+            $("#grandTotal").text(grandTotal.toFixed(2) );
+            $("#totalproduct").text("$" + (grandTotals.toFixed(2) )  );
+            
+            
+        }
+
+        function UpdatePrice(id){
+            var ids = `${id}`
+            var get_value = document.getElementById(ids).value
+            console.log()
+
+            var a_value_s = "amount"
+            var a_value_final = a_value_s.concat(ids)
+            var get_value_a = document.getElementById(a_value_final).innerHTML   
+
+
+            var s_value = "price"
+            var final_id = s_value.concat(id) 
+            console.log(get_value,">>>>",get_value_a,">>>",final_id)
+            var get_value_p = document.getElementById(final_id).innerHTML =  (get_value *  get_value_a)
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'products:update_cart' %}",  // URL to your Django view
+                data: {
+                    'cart_id': id,
+                    'newQuantity': get_value,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',  // Ensure CSRF token is included
+                },
+                success: function(response) {
+                    calculateGrandTotal()
+                    // Update any necessary UI elements
+                },
+                error: function(error) {
+                    console.error("Error updating cart item", error);
+                }
+            });
+            
+        }
+
+        
+        
+    </script>
+    <script>
+        
+        
+
+        
+            
+    <script>

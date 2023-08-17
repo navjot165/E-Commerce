@@ -111,17 +111,16 @@
                                                             <a href="compare.html" class="action compare"
                                                                 title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                         </div>
-                                                        <button title="Add To Cart" class=" add-to-cart">Add
-                                                            To Cart</button>
+                                                        <a href="{% url 'products:shop_product_detail' product.id %}"  title="View Details" class=" add-to-cart">View Details</a>
                                                     </div>
                                                     <div class="content">
                                                         <span class="ratings">
                                                             <span class="rating-wrap">
-                                                                <span class="star" style="width: 0%"></span>
+                                                                <span class="star" style="width: {{product.avg_rating}}%"></span>
                                                             </span>
-                                                            <span class="rating-num">( 0 Review )</span>
+                                                            <span class="rating-num">( {{product.rating_count}} Review )</span>
                                                         </span>
-                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">{{product.name}}</a></h5>
+                                                        <h5 class="title"><a href="{% url 'products:shop_product_detail' product.id %}">{{product.name}}</a></h5>
                                                         <span class="price">   
                                                             {% if product.discount %} 
                                                                 <span class="new">${{product.discount}}</span>
@@ -139,6 +138,7 @@
                                     </div>
                                     <div class="tab-pane fade" id="shop-list">
                                         {% for product in products %}
+                                        
                                         <div class="shop-list-wrapper">
                                             <div class="row">
                                                 <div class="col-md-5 col-lg-5 col-xl-4">
@@ -178,11 +178,11 @@
                                                         <div class="content">
                                                             <span class="ratings">
                                                                 <span class="rating-wrap">
-                                                                    <span class="star" style="width: 0%"></span>
+                                                                    <span class="star" style="width: {{product.avg_rating}}%"></span>
                                                                 </span>
-                                                                <span class="rating-num">( 0 Review )</span>
+                                                                <span class="rating-num">( 0 Review  {{product.rating_count}} )</span>
                                                             </span>
-                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' 1 %}">{{ product.name }}</a></h5>
+                                                            <h5 class="title"><a href="{% url 'products:shop_product_detail' product.id %}">{{ product.name }}</a></h5>
                                                             <p>{{product.description | truncatechars:200}}</p>
                                                         </div>
                                                         <div class="box-inner">
@@ -205,8 +205,7 @@
                                                                 <a href="compare.html" class="action compare"
                                                                     title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                             </div>
-                                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                                To Cart</button>
+                                                            <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
                                                         </div>
                                                     </div>
                                                 </div>

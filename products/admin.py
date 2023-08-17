@@ -77,9 +77,23 @@ class ProductAdmin(admin.ModelAdmin):
     display_colors.short_description = 'Colors'
 
 
+class RatingsAdmin(admin.ModelAdmin):
+    list_display = ('name','email','rating','created_on')
+
+    def has_add_permission(self, request):
+        return False 
+
+
+
+
+
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Size)
 admin.site.register(Color)
+
+admin.site.register(Ratings,RatingsAdmin)
 

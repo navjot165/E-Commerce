@@ -14,7 +14,9 @@
     opacity: 1;
     bottom: 50px;
     right: 30px;
+    transform: translate3d(100%, 0, 0);
     height: 11%;
+    z-index: 999;
 }
 
 .flash__icon {

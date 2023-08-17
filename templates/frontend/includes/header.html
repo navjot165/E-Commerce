@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="robots" content="index, follow" />
-    <title>Start Pollo - Fashoin eCommerce HTML Template</title>
-    <meta name="description" content="Star pollo - Fashoin eCommerce HTML Template" />
+    <title>Star Street - Fashoin E-Commerce Platform</title>
+    <meta name="description" content="Star street - Fashoin eCommerce HTML Template" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!-- Add site Favicon -->
@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/flash.css' %}" />
 
 </head>
-<div class="header-to-bar"> HELLO EVERYONE! 25% Off All Products </div>
+<div class="header-to-bar"> HELLO EVERYONE! WELCOME TO STAR STREET E-COMMERCE PLATFORM </div>
 
 <header>
     <div class="header-main sticky-nav ">
@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="{% url 'frontend:index' %}"><img src="{% static 'assets/images/logo/logo.png' %}" alt="Site Logo" /></a>
+                        <a href="{% url 'frontend:index' %}"><img src="{% static 'assets/images/logo/logo1.png' %}" alt="Site Logo" style="height:100px;width:150px" ></a>
                     </div>
                 </div>
                 <div class="col align-self-center d-none d-lg-block">
@@ -113,28 +113,38 @@
                 <div class="col col-lg-auto align-self-center pl-0">
                     <div class="header-actions">
                         {% if request.user.is_authenticated and request.user.role_id == 2  %}
-                        <a href="" class="header-action-btn offcanvas-toggle">
-                            <i class="pe-7s-user"></i>
-                        </a>
+                            <a href="{% url 'frontend:my_account' %}" class="header-action-btn ">
+                                <i class="pe-7s-user"></i>
+                            </a>
                         {% else %}
                         <a href="{% url 'frontend:login' %}" class="header-action-btn login-btn" data-bs-toggle="modal"
                         data-bs-target="#loginActive">Sign In</a>
                         {% endif %}
                         
                         <!-- Single Wedge Start -->
-                        <a href="#" class="header-action-btn" data-bs-toggle="modal" data-bs-target="#searchActive">
+                        {% comment %} <a href="#" class="header-action-btn" data-bs-toggle="modal" data-bs-target="#searchActive">
                             <i class="pe-7s-search"></i>
-                        </a>
+                        </a> {% endcomment %}
                         <!-- Single Wedge End -->
                         <!-- Single Wedge Start -->
-                        <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">
+                        
+                        
+                        <a href="#offcanvas-wishlist"
+                            class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-like"></i>
+                            {% if wish_list.count > 0 %}
+                                <span class="header-action-num">{{wish_list.count}}</span>
+                            {% endif %}
+                            <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
                         <!-- Single Wedge End -->
                         <a href="#offcanvas-cart"
                             class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-shopbag"></i>
-                            <span class="header-action-num">01</span>
+                            {% if wish_list.count > 0 %}
+                                <span class="header-action-num">{{cart_list.count}}</span>
+                            {% endif %}
+                            
                             <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
                         <a href="#offcanvas-mobile-menu"
@@ -158,40 +168,34 @@
         </div>
         <div class="body customScroll">
             <ul class="minicart-product-list">
+                {% for i in wish_list %}
                 <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/1.jpg' %}"
-                            alt="Cart product Image"></a>
+                    {% with product_image=i.product.productimage_set.first %}
+                        {% if product_image %}
+                            <img style="width: 30% !important" src="{{ product_image.image.url }}" alt="Product Image">
+                        {% else %}
+                            <p>No images available for this product in the wishlist.</p>
+                        {% endif %}
+                    {% endwith %}
                     <div class="content">
-                        <a href="" class="title">Women's Elizabeth Coat</a>
-                        <span class="quantity-price">1 x <span class="amount">$21.86</span></span>
-                        <a href="#" class="remove">×</a>
+                        <a href="" class="title">{{i.product.name}}</a>
+                        <span class="quantity-price">1 x <span class="amount">${% if i.product.discount %}{{i.product.discount}}{% else %} {{i.product.price}}{% endif %}</span></span>
+                        {% comment %} <a href="#" class="remove">×</a> {% endcomment %}
                     </div>
                 </li>
-                <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/2.jpg' %}"
-                            alt="Cart product Image"></a>
-                    <div class="content">
-                        <a href="" class="title">Long sleeve knee length</a>
-                        <span class="quantity-price">1 x <span class="amount">$13.28</span></span>
-                        <a href="#" class="remove">×</a>
-                    </div>
-                </li>
-                <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/3.jpg' %}"
-                            alt="Cart product Image"></a>
-                    <div class="content">
-                        <a href="" class="title">Cool Man Wearing Leather</a>
-                        <span class="quantity-price">1 x <span class="amount">$17.34</span></span>
-                        <a href="#" class="remove">×</a>
-                    </div>
-                </li>
+                {% endfor %}
+                
             </ul>
         </div>
+        {% if wish_list %}
         <div class="foot">
             <div class="buttons">
-                <a href="{% url 'products:wishlist' %}" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+                <a href="{% url 'products:user_wishlist' %}" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
             </div>
         </div>
+        {% else %}
+            <p align-center>No Items in you Wishlist<p>
+        {% endif %}
     </div>
 </div>
 <!-- OffCanvas Wishlist End -->
@@ -204,41 +208,38 @@
         </div>
         <div class="body customScroll">
             <ul class="minicart-product-list">
+                {% for i in cart_list %}
                 <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/1.jpg' %}"
-                            alt="Cart product Image"></a>
+                    {% with product_image=i.product.productimage_set.first %}
+                        {% if product_image %}
+                            <a href="{% url 'products:shop_product_detail' i.product.id %}" class="image"><img src="{{ product_image.image.url }}"
+                                alt="Cart product Image"></a>
+                        {% else %}
+                            <p>No images available for this product in the wishlist.</p>
+                        {% endif %}
+                    {% endwith %}
+                   
                     <div class="content">
-                        <a href="{" class="title">Women's Elizabeth Coat</a>
-                        <span class="quantity-price">1 x <span class="amount">$18.86</span></span>
+                        <a href="{" class="title">{{i.product.name}}</a>
+                        <span class="quantity-price">1 x <span class="amount">${% if i.product.discount %}{{i.product.discount}}{% else %} {{i.product.price}}{% endif %}</span></span>
                         <a href="#" class="remove">×</a>
                     </div>
                 </li>
-                <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/2.jpg' %}"
-                            alt="Cart product Image"></a>
-                    <div class="content">
-                        <a href="" class="title">Long sleeve knee length</a>
-                        <span class="quantity-price">1 x <span class="amount">$43.28</span></span>
-                        <a href="#" class="remove">×</a>
-                    </div>
-                </li>
-                <li>
-                    <a href="" class="image"><img src="{% static 'assets/images/product-image/3.jpg' %}"
-                            alt="Cart product Image"></a>
-                    <div class="content">
-                        <a href="" class="title">Cool Man Wearing Leather</a>
-                        <span class="quantity-price">1 x <span class="amount">$37.34</span></span>
-                        <a href="#" class="remove">×</a>
-                    </div>
+                {% endfor %}
+                
+                
                 </li>
             </ul>
         </div>
+        {% if cart_list %}
         <div class="foot">
             <div class="buttons mt-30px">
                 <a href="{% url 'products:cart_details' %}" class="btn btn-dark btn-hover-primary mb-30px">view cart</a>
-                <a href="{% url 'products:checkout' %}" class="btn btn-outline-dark current-btn">checkout</a>
             </div>
         </div>
+        {% else %}
+        <p align-center>No Items in you cart<p>
+        {% endif %}
     </div>
 </div>
 {% if messages %}

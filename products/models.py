@@ -1,7 +1,8 @@
 from django.db import models
-
+from PIL import Image
 from colorfield.fields import ColorField
-
+from accounts.models import *
+from accounts.constants import *
 
 class Color(models.Model):
     name = models.CharField(max_length=50)
@@ -21,6 +22,14 @@ class Category(models.Model):
     image = models.ImageField(upload_to="category/")
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     updated_on = models.DateTimeField(auto_now=False,null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            img = Image.open(self.image.path)
+            desired_size = (420, 270)
+            img = img.resize(desired_size, Image.ANTIALIAS)
+            img.save(self.image.path)
 
     class Meta:
         managed = True
@@ -60,6 +69,7 @@ class Product(models.Model):
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     sizes = models.ManyToManyField(Size)
     colors = models.ManyToManyField(Color)
+    rating = models.PositiveIntegerField(default = 0)
 
     def calculate_discount_percentage(self):
         if self.price > 0:
@@ -79,9 +89,91 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/')
     
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            img = Image.open(self.image.path)
+            desired_size = (420, 270)
+            img = img.resize(desired_size, Image.ANTIALIAS)
+            img.save(self.image.path)
+
     class Meta:
         managed = True
         db_table = 'tbl_product_image'
 
     def __str__(self):
         return self.product.name + " - " + str(self.id)
+
+
+class Wishlist(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'tbl_wishlist'
+
+
+
+class Ratings(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    message = models.CharField(max_length=1000)
+    rating = models.PositiveIntegerField(default=1)
+    created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'tbl_ratings'
+
+
+class Cart(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.CharField(max_length = 500)
+    size = models.CharField(max_length = 500)
+    color = models.CharField(max_length = 500)
+    price = models.PositiveIntegerField(default=1)
+    total_price = models.PositiveIntegerField(default=1)
+    created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'tbl_cart'
+
+
+class Order(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length = 500)
+    last_name = models.CharField(max_length = 500)
+    email = models.CharField(max_length = 500)
+    phone = models.CharField(max_length = 500)
+    address = models.CharField(max_length = 500)
+    state = models.CharField(max_length = 500)
+    city = models.CharField(max_length = 500)
+    zipcode = models.CharField(max_length = 500)
+    message = models.CharField(max_length = 500)
+    status = models.PositiveIntegerField(default=ADMIN,choices=ORDER_STATUS,null=True, blank=True)
+
+    created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'tbl_order'
+
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.CharField(max_length = 500)
+    size = models.CharField(max_length = 500)
+    color = models.CharField(max_length = 500)
+    price = models.PositiveIntegerField(default=1)
+    total_price = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        managed = True
+        db_table = 'tbl_orderItems'

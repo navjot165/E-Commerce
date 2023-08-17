@@ -122,6 +122,7 @@ SUIT_CONFIG = {
         {'app': 'blog','icon': 'icon-file', 'label': 'Blog', 'models': ('Blogs',)},
         {'app': 'products','icon': 'icon-shopping-cart','label': 'Project Management', 'models': ('Category','SubCategory','Product')},
         {'app': 'accounts','icon': 'icon-envelope', 'label': 'Contact', 'models': ('ContactUs',)},
+        {'app': 'products','icon': 'icon-star', 'label': 'Ratings', 'models': ('Ratings',)},
 
     ),
     # Customize other options as desired

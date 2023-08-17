@@ -8,7 +8,7 @@
                     <h2 class="breadcrumb-title">Shop</h2>
                     <!-- breadcrumb-list start -->
                     <ul class="breadcrumb-list">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'frontend:index' %}">Home</a></li>
                         <li class="breadcrumb-item active">Wishlist</li>
                     </ul>
                     <!-- breadcrumb-list end -->
@@ -40,54 +40,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for i in wish_list %}
                                     <tr>
                                         <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px" src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
+                                            {% with product_image=i.product.productimage_set.first %}
+                                            {% if product_image %}
+                                            <a href="{% url 'products:shop_product_detail' i.product.id %}"><img class="img-responsive ml-15px" src="{{ product_image.image.url }}" alt="" /></a>
+                                            {% else %}
+                                                <p>No images available for this product in the wishlist.</p>
+                                            {% endif %}
+                                        {% endwith %}
+                                            
                                         </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$60.00</span></td>
+                                        <td class="product-name"><a href="#">{{i.product.name}}</a></td>
+                                        <td class="product-price-cart">$<span id="amount{{i.product.id}}" class="amount">{% if i.product.discount %}{{i.product.discount}}{% else %} {{i.product.price}}{% endif %}</span></td>
                                         <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
+                                            <div class="cart-plus-minus" onclick="UpdatePrice({{i.product.id}})">
+                                                <input class="cart-plus-minus-box" onchange="UpdatePrice({{i.product.id}})" id="{{ i.product.id }}" type="text" name="qtybutton" value="1" />
                                             </div>
                                         </td>
-                                        <td class="product-subtotal">$70.00</td>
+                                        <td class="product-subtotal" id="price{{i.product.id}}">${% if i.product.discount %}{{i.product.discount}}{% else %} {{i.product.price}}{% endif %}</td>
                                         <td class="product-wishlist-cart">
                                             <a href="#">add to cart</a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px" src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$50.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">$80.00</td>
-                                        <td class="product-wishlist-cart">
-                                            <a href="#">add to cart</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <a href="#"><img class="img-responsive ml-15px" src="{% static 'assets/images/product-image/1.jpg' %}" alt="" /></a>
-                                        </td>
-                                        <td class="product-name"><a href="#">Product Name</a></td>
-                                        <td class="product-price-cart"><span class="amount">$70.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">$90.00</td>
-                                        <td class="product-wishlist-cart">
-                                            <a href="#">add to cart</a>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -98,3 +75,22 @@
     </div>
 
     {% include 'frontend/includes/footer.html' %}
+    <script>
+        function UpdatePrice(id){
+            var ids = `${id}`
+            var get_value = document.getElementById(ids).value
+
+
+            var a_value_s = "amount"
+            var a_value_final = a_value_s.concat(ids)
+            var get_value_a = document.getElementById(a_value_final).innerHTML   
+
+
+            var s_value = "price"
+            var final_id = s_value.concat(ids) 
+            console.log(get_value)
+            var get_value_p = document.getElementById(final_id).innerHTML =  "$"+(get_value *  get_value_a)
+
+            
+        }
+    </script>

@@ -8357,20 +8357,3 @@ Pages - My Account
     border-radius: 0;
   }
 }
-
-.single-banner {
-  width: 300px; /* Set your desired container width */
-}
-
-.single-banner img {
-  height: 200px; /* Set your desired image height */
-  width: auto; /* Let the width adjust based on the aspect ratio */
-}
-
-.thumb {
-  width: 250px; /* Set your desired container width */
-}
-.thumb img {
-  height: 300px;
-  width: auto;
-}
