@@ -72,25 +72,25 @@
                     <!-- Swiper -->
                     <div class="swiper-container zoom-top">
                         <div class="swiper-wrapper">
-                            {% for image in data.productimage_set.all %}
+                           
                             
                             <div class="swiper-slide zoom-image-hover">
-                                <img class="img-responsive m-auto" src="{{image.image.url}}"
+                                <img {% if data.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" class="img-responsive m-auto" src="{% static 'assets/images/brand-logo/1.png' %}"
                                     alt="">
                             </div>
-                            {% endfor %}
+                            
                             
                         </div>
                     </div>
                     <div class="swiper-container zoom-thumbs mt-3 mb-3">
                         <div class="swiper-wrapper">
-                            {% for image in data.productimage_set.all %}
+                           
                             
                             <div class="swiper-slide">
-                                <img class="img-responsive m-auto" src="{{image.image.url}}"
+                                <img class="img-responsive m-auto {% if data.quantity > 0 %}{% else %} out-of-stock {% endif %} " src="{% static 'assets/images/brand-logo/1.png' %}"
                                     alt="">
                             </div>
-                            {% endfor %}
+                            
                             
                         </div>
                     </div>
@@ -174,18 +174,22 @@
                             <div class="cart-plus-minus">
                                 <a  id="decreaseBtn" class="dec qtybutton"  >-</button>
                                     <input id="valueInput" class="cart-plus-minus-box" type="text" name="quantity" value="1" style="margin-top: -33px !important;"                                    >
-                                <a id="increaseBtn" class="inc qtybutton"  >+</button>
+                                <a id="increaseBtn" class="inc qtybutton" >+</button>
                             </div>
 
                             <div class="pro-details-cart" style="margin-top:-57.5px !important;margin-left:80px">
-                                <button class="add-cart" href="#" type="submit"> Add To
-                                    Cart</button>
+                                {% if data.quantity > 0 %}
+                                    <button class="add-cart" href="#" type="submit"> Add To
+                                        Cart</button>
+                                {% else %}
+                                <button disabled  class="add-cart" href="#" type="submit"> Out Of Stock</button>
+                                {% endif %}
                             </div>
                             </form>
 
-                            <div class="pro-details-compare-wishlist pro-details-wishlist ">
+                            {% comment %} <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                 <a href="{% url 'products:wishlist'  %}?id={{data.id}}"><i class="pe-7s-like"></i></a>
-                            </div>
+                            </div> {% endcomment %}
 
                         </div>
                         <div class="pro-details-sku-info pro-details-same-style  d-flex">
@@ -371,7 +375,7 @@
                                 <a href="{% url 'products:shop_product_detail' product.id %}" class="image">
                                     {% with product_image=product.productimage_set.first %}
                                     {% if product_image %}
-                                        <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                        <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                     {% else %}
                                         <p>No image available</p>
                                     {% endif %}
@@ -379,7 +383,7 @@
 
                                 {% with product_image=product.productimage_set.first %}
                                     {% if product_image %}
-                                    <img class="hover-image" src="{{ product_image.image.url }}"
+                                    <img class="hover-image {% if product.quantity > 0 %}{% else %}out-of-stock {% endif %}" src="{{ product_image.image.url }}"
                                     alt="{{ product.name }}" />
                                     {% else %}
                                         <p>No image available</p>
@@ -398,8 +402,12 @@
                                     <a href="compare.html" class="action compare" title="Compare"><i
                                             class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                 </div>
-                                <button title="Add To Cart" class=" add-to-cart">Add
-                                    To Cart</button>
+                                {% if product.quantity > 0 %}
+                                <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
+                                {% else %}
+                                    <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                {% endif %}
+                                
                             </div>
                             <div class="content">
                                 <span class="ratings">

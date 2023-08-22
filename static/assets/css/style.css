@@ -8357,3 +8357,11 @@ Pages - My Account
     border-radius: 0;
   }
 }
+
+.out-of-stock{
+   
+  filter: grayscale(100%); /* Apply black and white effect */
+  width: 420px !important;
+  height: 270 !important;
+  
+}

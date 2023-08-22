@@ -83,10 +83,51 @@ class RatingsAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False 
 
+# class OrderItemsInline(admin.TabularInline):
+#     model = OrderItems
+
+#     def has_add_permission(self, request):
+#         return False 
+
+
+# class OrderAdmin(admin.ModelAdmin):
+#     list_display = ('id','first_name','last_name','email','city','created_on')
+#     readonly_fields = ('id','first_name','last_name','email','phone','created_on','address','city','state','zipcode','message','created_by')
+#     inlines = [OrderItemsInline]
 
 
 
+#     def has_add_permission(self, request):
+#         return False 
 
+class OrderItemInline(admin.TabularInline):
+    model = OrderItems
+    extra = 0
+    readonly_fields = ['id','product', 'quantity','size','color','price','total_price','created_by','product_image']  # Add other fields if needed
+    can_delete = False
+    def product_image(self, instance):
+        product_images = instance.product.productimage_set.all()
+        if product_images.exists():
+            image_url = product_images.first().image.url
+            return format_html('<img src="{}" width="100" height="100" />', image_url)
+        return 'No Image'
+
+    product_image.short_description = 'Product Image'
+    product_image.allow_tags = True
+    product_image.short_description = 'Product Image'
+    def has_add_permission(self, request):
+        return False 
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id','first_name','last_name','email','grand_total','created_on')
+    readonly_fields = ('id','first_name','last_name','email','phone','created_on','address','city','state','zipcode','message','discounted_price','grand_total','coupan','created_by')
+    inlines = [OrderItemInline]
+
+    def has_add_permission(self, request):
+        return False 
+
+class CoupansAdmin(admin.ModelAdmin):
+    list_display = ('id','name','percentage','count','expiry_days','created_on',) 
 
 
 admin.site.register(Product, ProductAdmin)
@@ -94,6 +135,8 @@ admin.site.register(SubCategory, SubCategoryAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Size)
 admin.site.register(Color)
-
 admin.site.register(Ratings,RatingsAdmin)
+admin.site.register(Order,OrderAdmin)
+
+admin.site.register(Coupans,CoupansAdmin)
 

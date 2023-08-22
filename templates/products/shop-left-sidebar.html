@@ -78,7 +78,7 @@
                                                             
                                                             {% with product_image=product.productimage_set.first %}
                                                                 {% if product_image %}
-                                                                    <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                                    <img style="width:270px;height:310px !important"  {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                                                 {% else %}
                                                                     <p>No image available</p>
                                                                 {% endif %}
@@ -86,7 +86,7 @@
 
                                                             {% with product_image=product.productimage_set.first %}
                                                                 {% if product_image %}
-                                                                    <img class="hover-image" src="{{ product_image.image.url }}"
+                                                                    <img style="width:270px;height:310px !important"  class="hover-image {% if product.quantity > 0 %}{% else %} out-of-stock {% endif %}" src="{{ product_image.image.url }}"
                                                                     alt="{{ product.name }}" />
                                                                 {% else %}
                                                                     <p>No image available</p>
@@ -111,7 +111,11 @@
                                                             <a href="compare.html" class="action compare"
                                                                 title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                         </div>
-                                                        <a href="{% url 'products:shop_product_detail' product.id %}"  title="View Details" class=" add-to-cart">View Details</a>
+                                                        {% if product.quantity > 0 %}
+                                                        <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
+                                                        {% else %}
+                                                            <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                                        {% endif %}
                                                     </div>
                                                     <div class="content">
                                                         <span class="ratings">
@@ -147,7 +151,7 @@
                                                             <a href="{% url 'products:shop_product_detail' product.id  %}" class="image">
                                                                 {% with product_image=product.productimage_set.first %}
                                                                     {% if product_image %}
-                                                                        <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                                        <img style="width:270px;height:310px !important" {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %}  src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                                                     {% else %}
                                                                         <p>No image available</p>
                                                                     {% endif %}
@@ -155,8 +159,7 @@
 
                                                                 {% with product_image=product.productimage_set.first %}
                                                                     {% if product_image %}
-                                                                        <img class="hover-image" src="{{ product_image.image.url }}"
-                                                                        alt="{{ product.name }}" />
+                                                                        <img   class="hover-image {% if product.quantity > 0 %}{% else %} out-of-stock {% endif %}" src="{{ product_image.image.url }}"  alt="{{ product.name }}" />
                                                                     {% else %}
                                                                         <p>No image available</p>
                                                                     {% endif %}
@@ -205,8 +208,11 @@
                                                                 <a href="compare.html" class="action compare"
                                                                     title="Compare"><i class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                             </div>
+                                                            {% if product.quantity > 0 %}
                                                             <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
-                                                        </div>
+                                                            {% else %}
+                                                                <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                                            {% endif %}                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

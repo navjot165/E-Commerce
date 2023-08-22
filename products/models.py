@@ -1,5 +1,5 @@
 from django.db import models
-from PIL import Image
+from PIL import Image,ImageFilter
 from colorfield.fields import ColorField
 from accounts.models import *
 from accounts.constants import *
@@ -23,25 +23,19 @@ class Category(models.Model):
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     updated_on = models.DateTimeField(auto_now=False,null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-            desired_size = (420, 270)
-            img = img.resize(desired_size, Image.ANTIALIAS)
-            img.save(self.image.path)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         managed = True
         db_table = 'tbl_category'
 
-    def __str__(self):
-        return self.name
+
 
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="subcategory/")
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     updated_on = models.DateTimeField(auto_now=False,null=True, blank=True)
@@ -51,7 +45,7 @@ class SubCategory(models.Model):
         db_table = 'tbl_subcategory'
 
     def __str__(self):
-        return self.name
+        return self.name 
 
 
 class Product(models.Model):
@@ -89,14 +83,6 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/')
     
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-            desired_size = (420, 270)
-            img = img.resize(desired_size, Image.ANTIALIAS)
-            img.save(self.image.path)
-
     class Meta:
         managed = True
         db_table = 'tbl_product_image'
@@ -130,19 +116,28 @@ class Ratings(models.Model):
 
 
 class Cart(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    quantity = models.CharField(max_length = 500)
-    size = models.CharField(max_length = 500)
-    color = models.CharField(max_length = 500)
-    price = models.PositiveIntegerField(default=1)
-    total_price = models.PositiveIntegerField(default=1)
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    run_time_coupan = models.PositiveIntegerField(blank=True,null=True)
+    coupans = models.ForeignKey('Coupans',blank=True,null=True,on_delete=models.SET_NULL)
 
     class Meta:
         managed = True
         db_table = 'tbl_cart'
 
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.CharField(max_length = 500)
+    size = models.CharField(max_length = 500)
+    color = models.CharField(max_length = 500)
+    price = models.PositiveIntegerField(default=1)
+    total_price = models.PositiveIntegerField(default=1)  
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+      
+    class Meta:
+        managed = True
+        db_table = 'tbl_cart_product'
 
 class Order(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -155,9 +150,12 @@ class Order(models.Model):
     city = models.CharField(max_length = 500)
     zipcode = models.CharField(max_length = 500)
     message = models.CharField(max_length = 500)
+    discounted_price = models.PositiveIntegerField(blank=True,null=True)
+    grand_total = models.PositiveIntegerField(blank=True,null=True)
+    coupan = models.ForeignKey('Coupans',on_delete=models.CASCADE,blank=True,null=True)
     status = models.PositiveIntegerField(default=ADMIN,choices=ORDER_STATUS,null=True, blank=True)
-
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
 
     class Meta:
         managed = True
@@ -177,3 +175,19 @@ class OrderItems(models.Model):
     class Meta:
         managed = True
         db_table = 'tbl_orderItems'
+
+
+class Coupans(models.Model):
+    name =models.CharField(max_length = 500)
+    percentage = models.PositiveIntegerField(default=1)
+    count = models.CharField(max_length = 500,default=0)
+    expiry_days = models.PositiveIntegerField(default=1)
+    created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'tbl_coupans'
+
+
+    def __str__(self):
+        return self.name

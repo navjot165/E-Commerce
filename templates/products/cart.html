@@ -1,5 +1,96 @@
 {% load static %}
 {% include 'frontend/includes/header.html' %}
+<style>
+   
+    .modal-confirm {		
+        color: #636363;
+        width: 325px;
+        font-size: 14px;
+    }
+    .modal-confirm .modal-content {
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+    }
+    .modal-confirm .modal-header {
+        border-bottom: none;   
+        position: relative;
+    }
+    .modal-confirm h4 {
+        text-align: center;
+        font-size: 26px;
+        margin: 30px 0 -15px;
+    }
+    .modal-confirm .form-control, .modal-confirm .btn {
+        min-height: 40px;
+        border-radius: 3px; 
+    }
+    .modal-confirm .close {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }	
+    .modal-confirm .modal-footer {
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+    }	
+    .modal-confirm .icon-box {
+        color: #fff;		
+        position: absolute;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        top: -70px;
+        width: 95px;
+        height: 95px;
+        border-radius: 50%;
+        z-index: 9;
+        background: #fb5d5d;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+    }
+    .modal-confirm .icon-box i {
+        font-size: 58px;
+        position: relative;
+        top: 3px;
+    }
+    .modal-confirm.modal-dialog {
+        margin-top: 80px;
+    }
+    .modal-confirm .btn {
+        color: #fff;
+        border-radius: 4px;
+        background: #fb5d5d;
+        text-decoration: none;
+        transition: all 0.4s;
+        line-height: normal;
+        border: none;
+    }
+    .modal-confirm .btn:hover, .modal-confirm .btn:focus {
+        background: #fb5d5d;
+        outline: none;
+    }
+    .trigger-btn {
+        display: inline-block;
+        margin: 100px auto;
+    }
+    .strikethrough {
+        text-decoration: line-through;
+        position: relative;
+      }
+      
+      .strikethrough::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        border-top: 1px solid black; /* Adjust color and style as needed */
+      }
+</style>
     <!-- breadcrumb-area start -->
     <div class="breadcrumb-area">
         <div class="container">
@@ -78,7 +169,7 @@
                                     <div class="cart-shiping-update">
                                         <a href="#">Continue Shopping</a>
                                     </div>
-                                    <div class="cart-clear">
+                                    <div class="cart-clear d-none">
                                         <button>Update Shopping Cart</button>
                                         <a onclick="return confirm('Are you sure you want to clear shopping cart?')" href="{% url 'products:clear_cart' %}">Clear Shopping Cart</a>
                                     </div>
@@ -87,7 +178,7 @@
                         </div>
                     </form>
                     <div class="row">
-                        {% comment %} <div class="col-lg-4 col-md-6 mb-lm-30px">
+                         {% comment %} <div class="col-lg-4 col-md-6 mb-lm-30px">
                             <div class="cart-tax">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
@@ -130,27 +221,26 @@
                                 </div>
                             </div>
                         </div> {% endcomment %}
-                        {% comment %} <div class="col-lg-6 col-md-6 mb-lm-30px">
+                        <div class="col-lg-6 col-md-6 mb-lm-30px">
                             <div class="discount-code-wrapper">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
                                 </div>
                                 <div class="discount-code">
                                     <p>Enter your coupon code if you have one.</p>
-                                    <form>
-                                        <input type="text" required="" name="name" />
-                                        <button class="cart-btn-2" type="submit">Apply Coupon</button>
-                                    </form>
+                                        <input type="text" required id="promo_name" name="name" />
+                                        <button type="button" onclick="apply_promo();" class="cart-btn-2" type="submit">Apply Coupon</button>
                                 </div>
                             </div>
-                        </div> {% endcomment %}
-                        <div class="col-lg-12 col-md-12 mt-md-30px">
+                        </div> 
+                        <div class="col-lg-6 col-md-12 mt-md-30px">
                             <div class="grand-totall">
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                 </div>
                                 <h5>Total products <span id="totalproduct" >${{cart_total}}</span></h5>
                                 <h5>Shipping price <span id="shipingcost">${{shipping_price}}</span></h5>
+                                
                                 {% comment %} <div class="total-shipping">
                                     <h5>Total shipping</h5>
                                     <ul>
@@ -158,7 +248,11 @@
                                         <li><input type="checkbox" /> Express <span>$30.00</span></li>
                                     </ul>
                                 </div> {% endcomment %}
-                                <h4 class="grand-totall-title">Grand Total <span id="grandTotal">${{grand_total}}</span></h4>
+                                <h5 id="p_c" class=" d-none">Promocode <span style="color:red" id="p_n"></span></h5>
+                                <h5 id="hdp" class="d-none">Discount <span id="hdp1">$</span></h5>
+                                <h5 class="grand-totall-title ">Grand Total <span class="" id="grandTotal">${{grand_total}} </span></h5>
+
+                                <h5 id="fdp" class="grand-totall-title d-none">Final Discounted Price <span id="final_discpunted_price"></span></h5>
                                 <a href="{% url 'products:checkout' %}">Proceed to Checkout</a>
                             </div>
                         </div>
@@ -167,6 +261,56 @@
             </div>
         </div>
     </div>
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- Modal HTML -->
+<div id="myModal" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="icon-box">
+					<i class="material-icons">&#xE876;</i>
+				</div>				
+				<h4 class="modal-title w-100">Awesome!</h4>	
+			</div>
+			<div class="modal-body">
+				<p class="text-center">Congratulations , Promocode applied successfully</p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="remove_modal()" class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div> 
+<div id="myModal1" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="icon-box">
+					<i class="fas fa-cross"></i>
+				</div>				
+				<h4 class="modal-title w-100">Opps!</h4>	
+			</div>
+			<div class="modal-body">
+				<p class="text-center">Coupan not found , Please try with another one</p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="remove_modal1()" class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>     
+</body>
+</html>
     <!-- Cart Area End -->
 
     {% include 'frontend/includes/footer.html' %}
@@ -183,21 +327,14 @@
             const shippingCost = parseFloat($("#shipingcost").text().replace("$", ""));
             grandTotal += shippingCost;
             $("#grandTotal").text(grandTotal.toFixed(2) );
-            $("#totalproduct").text("$" + (grandTotals.toFixed(2) )  );
-            
-            
+            $("#totalproduct").text("$" + (grandTotals.toFixed(2) )  );   
         }
-
         function UpdatePrice(id){
             var ids = `${id}`
             var get_value = document.getElementById(ids).value
-            console.log()
-
             var a_value_s = "amount"
             var a_value_final = a_value_s.concat(ids)
             var get_value_a = document.getElementById(a_value_final).innerHTML   
-
-
             var s_value = "price"
             var final_id = s_value.concat(id) 
             console.log(get_value,">>>>",get_value_a,">>>",final_id)
@@ -218,17 +355,56 @@
                 error: function(error) {
                     console.error("Error updating cart item", error);
                 }
-            });
-            
+            });   
         }
-
-        
-        
     </script>
     <script>
         
-        
-
-        
+        function apply_promo(){
+            var value = document.getElementById('promo_name').value;
             
-    <script>
+            $.ajax({
+                type: "POST",
+                url: "{% url 'products:apply_code' %}",
+                data: {
+                    'promo': value,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(response) {
+                    $('#myModal').modal('show')
+                    $('#p_c').removeClass('d-none')
+                    $('#hdp').removeClass('d-none')
+                    $('#fdp').removeClass('d-none')
+                    $('#grandTotal').addClass('strikethrough')
+                    document.getElementById('p_n').innerHTML = response.name
+                    var percentage = response.percentage
+                    var grand_total =  document.getElementById('grandTotal').innerHTML
+
+                    var discounted_price = ( parseFloat(grand_total.substr(1)) * parseFloat(response.percentage) ) / 100
+                    document.getElementById('hdp1').innerHTML = discounted_price
+                    var final_result = parseFloat(grand_total.substr(1)) - parseFloat(discounted_price)
+                    document.getElementById('final_discpunted_price').innerHTML =  final_result
+                },
+                error: function(error) {
+                    if (value == "" || value == " " ) {
+                    }else{
+                        $('#myModal1').modal('show')
+                    }
+                    
+                }
+            });   
+
+        }
+
+        function remove_modal(){
+ 
+            $('#myModal').modal('hide');
+
+        }
+        function remove_modal1(){
+ 
+            $('#myModal1').modal('hide');
+
+        }
+        
+    </script>

@@ -23,6 +23,8 @@ urlpatterns = [
     re_path(r'^clear-cart$', clear_cart, name='clear_cart'),
     re_path(r'^update-cart$', update_cart, name='update_cart'),
     re_path(r'^place-order$', placeOrder, name='placeorder'),
+    re_path(r'^apply-code$', apply_promocode, name='apply_code'),
 
-]  
+]
+  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

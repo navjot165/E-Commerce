@@ -17,7 +17,7 @@ def index(request):
         except:
             wishlist_products = None
         try:
-            cart_list = Cart.objects.filter(created_by = request.user)
+            cart_list = CartItem.objects.filter(created_by = request.user)
         except:
             cart_list = None
         rating = Ratings.objects.filter(rating__gt = 4).order_by('-id')[0:3]
@@ -57,9 +57,19 @@ def index(request):
             else:
                 product.avg_rating = 0
 
-
-
+        shop_data = []
         category = Category.objects.all()
+        for i in category:
+            s_c = []
+            sub_cats = SubCategory.objects.filter(category_id = i.id )
+            for j in sub_cats:
+                s_c.append({"name":j.name,"id":j.id})
+            print(sub_cats)
+            shop_data.append({
+                "name":i.name,
+                "sub_cat":s_c
+            })
+        
         cat_id,cat_name,cat_image,cat_items=[],[],[],[]
         for cat in category:
             cat_id.append(cat.id)
@@ -71,27 +81,53 @@ def index(request):
         data = zip(cat_id,cat_name,cat_image,cat_items)
         return render(request, 'frontend/index.html',{"data":data,"products":all_products,"new_products":new_products,
                                                     "discounted_products":discounted_products,"wish_list":wish_list,"rating":rating,
-                                                    "wishlist_products":wishlist_products,"cart_list":cart_list})
+                                                    "wishlist_products":wishlist_products,"cart_list":cart_list,"shop_data":shop_data})
     
 def about(request):
+    shop_data = []
+    category = Category.objects.all()
+    for i in category:
+        s_c = []
+        sub_cats = SubCategory.objects.filter(category_id = i.id )
+        for j in sub_cats:
+            s_c.append({"name":j.name,"id":j.id})
+        print(sub_cats)
+        shop_data.append({
+            "name":i.name,
+            "sub_cat":s_c
+        })
+        
     rating = Ratings.objects.filter(rating__gt = 4).order_by('-id')[0:3]
     try:
-        cart_list = Cart.objects.filter(created_by = request.user)
+        cart_list = CartItem.objects.filter(created_by = request.user)
     except:
         cart_list = None
     try:
         wish_list = Wishlist.objects.filter(created_by = request.user)
     except:
         wish_list = None
-    return render(request, 'frontend/about.html',{"wish_list":wish_list,"rating":rating,"cart_list":cart_list})
+    return render(request, 'frontend/about.html',{"wish_list":wish_list,"rating":rating,"cart_list":cart_list,"shop_data":shop_data})
 
 def contact(request):
+    shop_data = []
+    category = Category.objects.all()
+    for i in category:
+        s_c = []
+        sub_cats = SubCategory.objects.filter(category_id = i.id )
+        for j in sub_cats:
+            s_c.append({"name":j.name,"id":j.id})
+        print(sub_cats)
+        shop_data.append({
+            "name":i.name,
+            "sub_cat":s_c
+        })
+        
     try:
         wish_list = Wishlist.objects.filter(created_by = request.user)
     except:
         wish_list = None
     try:
-        cart_list = Cart.objects.filter(created_by = request.user)
+        cart_list = CartItem.objects.filter(created_by = request.user)
     except:
         cart_list = None
     if request.method == "POST":
@@ -102,7 +138,7 @@ def contact(request):
         return redirect('frontend:contact_us')
         
     
-    return render(request, 'frontend/contact.html',{"wish_list":wish_list,"cart_list":cart_list})
+    return render(request, 'frontend/contact.html',{"wish_list":wish_list,"cart_list":cart_list,"shop_data":shop_data})
 
 def login(request):
     return render(request, 'frontend/login.html')
@@ -111,12 +147,25 @@ def product_list(request):
     return render(request, 'frontend/shop-left-sidebar.html')
 
 def my_account(request):
+    shop_data = []
+    category = Category.objects.all()
+    for i in category:
+        s_c = []
+        sub_cats = SubCategory.objects.filter(category_id = i.id )
+        for j in sub_cats:
+            s_c.append({"name":j.name,"id":j.id})
+        print(sub_cats)
+        shop_data.append({
+            "name":i.name,
+            "sub_cat":s_c
+        })
+        
     try:
         wish_list = Wishlist.objects.filter(created_by = request.user)
     except:
         wish_list = None
     try:
-        cart_list = Cart.objects.filter(created_by = request.user)
+        cart_list = CartItem.objects.filter(created_by = request.user)
     except:
         cart_list = None
     user = User.objects.get(id = request.user.id)
@@ -134,7 +183,7 @@ def my_account(request):
             user.dob = request.POST.get("dob")
         user.save()
         messages.success(request, 'Profile updated successfully')
-    return render(request, 'frontend/my-account.html',{"wish_list":wish_list,"cart_list":cart_list})
+    return render(request, 'frontend/my-account.html',{"wish_list":wish_list,"cart_list":cart_list,"shop_data":shop_data})
 
 def get_product_details(request, product_id):
     product = Product.objects.get(pk=product_id)

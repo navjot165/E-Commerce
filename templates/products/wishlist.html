@@ -61,7 +61,7 @@
                                         </td>
                                         <td class="product-subtotal" id="price{{i.product.id}}">${% if i.product.discount %}{{i.product.discount}}{% else %} {{i.product.price}}{% endif %}</td>
                                         <td class="product-wishlist-cart">
-                                            <a href="#">add to cart</a>
+                                            <a href="{% url 'products:shop_product_detail' i.product.id %}">View Detaails</a>
                                         </td>
                                     </tr>
                                     {% endfor %}

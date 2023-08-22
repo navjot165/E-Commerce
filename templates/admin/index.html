@@ -1,0 +1,107 @@
+{% extends "admin/index.html" %}
+
+
+{% block content %}
+<style>
+div#content-related{
+display:none
+}
+	.row{
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.col-md-4 {
+		min-width: 33.33%;
+		display: inline-block;
+		text-align: center;	
+		cursor: pointer;
+		max-width: 100%;
+	}
+	.dash-block{
+		padding: 20px;
+		border-radius: 5px;
+		margin: 5px;
+		background: #fff;
+		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	}
+	.dash-block p{
+		font-size: 20px;
+		font-weight: bold;
+	}
+	h1 {
+	    display: block;
+	    font-size: 1.8em;
+	    margin-block-start: 0.67em;
+	    margin-block-end: 0.67em;
+	    margin-inline-start: 0px;
+	    margin-inline-end: 0px;
+	    font-weight: bold;
+	}
+	.bg-primary {
+	    background: #0a8eff;
+	}
+	.bg-success {
+	    background: #219c12;
+	}
+	.bg-danger {
+	    background: #de1c1c;
+	}
+	.bg-secondary {
+	    background: #2cabab;
+	}
+	.bg-warning {
+	    background: #de500c;
+	}
+	.text-white{
+	color: #fff;
+	}
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <a href="/admin/accounts/user/?role_id__exact=3">
+                <div class="customer dash-block bg-primary text-white">
+                    <h1>Total Emails</h1>
+                    <p>1</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/accounts/user/?role_id__exact=4">
+                <div class="driver dash-block bg-success text-white">
+                    <h1>Total Pending Emails</h1>
+                    <p>2</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/accounts/user/?role_id__exact=2">
+                <div class="dash-block bg-danger text-white">
+                    <h1>Total Completed Emails</h1>
+                    <p>4</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/merchant/category/">
+                <div class="categories dash-block bg-warning text-white">
+                    <h1>Total Failed Emails</h1>
+                    <p>7</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/merchant/subcategory/">
+                <div class="sub-categories dash-block bg-secondary text-white">
+                    <h1>Total Accounts</h1>
+                    <p>10</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

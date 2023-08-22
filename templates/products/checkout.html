@@ -4,6 +4,19 @@
     .error{
         color:red
     }
+    .strikethrough {
+        text-decoration: line-through;
+        position: relative;
+      }
+      
+      .strikethrough::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        border-top: 1px solid black; /* Adjust color and style as needed */
+      }
 </style>
     <!-- breadcrumb-area start -->
     <div class="breadcrumb-area">
@@ -30,6 +43,7 @@
         <div class="container">
             
                 <form id="checkout" action="{% url 'products:placeorder' %}" method="post">
+                    {% csrf_token %}
                     <div class="row">
                     <div class="col-lg-7">
                         <div class="billing-info-wrap">
@@ -116,6 +130,14 @@
                                         
                                         </ul>
                                     </div>
+                                    {% if cart.run_time_coupan %}
+                                    <div class="your-order-bottom">
+                                        <ul>
+                                            <li style="color:red" class="your-order-shipping">{{coupan.name}}</li>
+                                            <li style="color:red">{{discounted_price}}</li>
+                                        </ul>
+                                    </div>
+                                    {% endif %}
                                     <div class="your-order-bottom">
                                         <ul>
                                             <li class="your-order-shipping">Shipping</li>
@@ -123,10 +145,27 @@
                                         </ul>
                                     </div>
                                     <div class="your-order-total">
+                                        {% if discounted_t %}
                                         <ul>
-                                            <li class="order-total">Total</li>
-                                            <li>${{total}}</li>
+                                            <li class="order-total">Sub Total</li>
+                                            
+                                            <li class="strikethrough">${{total}}</li>
+                                            
                                         </ul>
+                                        <ul>
+                                            <li class="order-total">Final Total</li>
+                                            
+                                            <li >${{discounted_t}}</li>
+                                            
+                                        </ul>
+                                        {% else %}
+                                        <ul>
+                                            <li class="order-total">Final Total</li>
+                                           
+                                            <li>${{total}}</li>
+                                           
+                                        </ul>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="payment-method">

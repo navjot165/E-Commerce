@@ -33,7 +33,7 @@ class User(AbstractUser):
         db_table = 'tbl_user'
 
     def __str__(self):
-        return str(self.username)
+        return str(self.first_name)
 
 
 class LoginHistory(models.Model):
