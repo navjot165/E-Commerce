@@ -17,10 +17,10 @@
                 </div>
             </div>
             <div class="intro-left">
-                <img src="{% static 'assets/images/about-image/intro-left.png' %}" alt="" class="intro-left-image">
+                <img src="{% static 'assets/images/banner/intro-left.png' %}" alt="" class="intro-left-image">
             </div>
             <div class="intro-right">
-                <img src="{% static 'assets/images/about-image/intro-right.png' %}" alt="" class="intro-right-image">
+                <img src="{% static 'assets/images/banner/intro-right.png' %}" alt="" class="intro-right-image">
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-6 d-flex">
                     <div class="service-left align-self-center align-items-center">
-                        <img src="{% static 'assets/images/about-image/srevice-left-img.png' %}" alt="" class="service-left-image">
+                        <img src="{% static 'assets/images/banner/srevice-left-img.png' %}" alt="" class="service-left-image">
                     </div>
                 </div>
                 <div class="col-md-6 d-flex justify-content-center">
@@ -55,7 +55,7 @@
     <!-- Service Area End -->
 
     <!-- Team Area Start -->
-
+{% comment %} 
     <div class="team-area pt-100px pb-100px">
         <div class="container">
             <div class="row">
@@ -125,7 +125,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
 
     <!-- Team Area End -->
 
@@ -189,136 +189,50 @@
             <div class="testimonial-wrapper swiper-container">
                 <div class="swiper-wrapper">
                     <!-- Slider Single Item -->
+                    {% for i in rating %}
                     <div class="swiper-slide">
                         <div class="testi-inner">
                             <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
+                                {% if i.rating == 1 %}
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 2 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 3 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 4 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% else %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% endif %}
                             </div>
                             <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
+                                <p>{{i.message}}
                                 </p>
                             </div>
                             <div class="testi-author">
                                 <div class="author-img">
-                                    <img src="assets/images/testimonial-image/1.png" alt="">
+                                    <img src="{% static 'assets/images/default.png' %}" alt="">
                                 </div>
                                 <div class="author-name">
-                                    <h4 class="name">Daisy Morgan</h4>
+                                    <h4 class="name">{{i.name}}</h4>
                                     <span class="title">Happy Customer</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                     <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="assets/images/testimonial-image/2.png" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Leah Chatman</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/3.png' %}" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Reyna Chung</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="assets/images/testimonial-image/1.png" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Daisy Morgan</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="assets/images/testimonial-image/2.png" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Reyna Chung</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
+
                 </div>
             </div>
             <!-- Slider Start -->

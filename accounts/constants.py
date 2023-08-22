@@ -38,3 +38,9 @@ Gender
 GENDER = ((1,"Male"),(2,"Female"))
 MALE = 1
 FEMALE = 2 
+
+
+ORDER_STATUS = ((1,"New Order"),(2,"Completed"),(3,"Rejected"))
+NEW=1
+COMPLETE=2
+REJECTED=3

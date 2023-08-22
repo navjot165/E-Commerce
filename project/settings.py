@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'frontend',
     'blog',
     'accounts',
-    'products'
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +121,11 @@ SUIT_CONFIG = {
         {'app': 'accounts','icon': 'icon-user', 'label': 'Accounts', 'models': ('User',)},
         {'app': 'blog','icon': 'icon-file', 'label': 'Blog', 'models': ('Blogs',)},
         {'app': 'products','icon': 'icon-shopping-cart','label': 'Project Management', 'models': ('Category','SubCategory','Product')},
+        {'app': 'products','icon': 'icon-file', 'label': 'Order Management', 'models': ('Order',)},
+        {'app': 'products','icon': 'icon-tag', 'label': 'Coupans Management', 'models': ('Coupans',)},
+        {'app': 'products','icon': 'icon-star', 'label': 'Ratings', 'models': ('Ratings',)},
         {'app': 'accounts','icon': 'icon-envelope', 'label': 'Contact', 'models': ('ContactUs',)},
+
 
     ),
     # Customize other options as desired

@@ -13,6 +13,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255,null=True,blank=True)
     full_name = models.CharField(max_length=255,null=True,blank=True)
     email = models.EmailField("email address", null=True, blank=True)
+    dob = models.CharField(max_length=255,null=True,blank=True)
     mobile_no = models.CharField(max_length=20, null=True, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
     profile_pic = models.FileField(upload_to='profile_pic/', blank=True, null=True)
@@ -32,7 +33,7 @@ class User(AbstractUser):
         db_table = 'tbl_user'
 
     def __str__(self):
-        return str(self.username)
+        return str(self.first_name)
 
 
 class LoginHistory(models.Model):

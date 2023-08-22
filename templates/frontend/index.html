@@ -16,7 +16,7 @@
                                     <span class="category">Offer 2021</span>
                                     <h2 class="title-1">Sale Up To </h2>
                                     <h2 class="title-2"><span>50%</span> Off</h2>
-                                    <a href="shop-left-sidebar.html" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
+                                    <a href="{% url 'products:shop' 1 %}" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
                                             class="fa fa-shopping-basket ml-15px" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -41,7 +41,7 @@
                                     <span class="category">Offer 2021</span>
                                     <h2 class="title-1">Sale Up To </h2>
                                     <h2 class="title-2"><span>50%</span> Off</h2>
-                                    <a href="shop-left-sidebar.html" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
+                                    <a href="{% url 'products:shop' 1 %}" class="btn btn-lg btn-primary btn-hover-dark"> Shop Now <i
                                             class="fa fa-shopping-basket ml-15px" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -76,11 +76,11 @@
             <div class="row">
                 {% for cat_id,cat_name,cat_image,cat_items in data %}
                 <div class="single-col ">
-                    <a href="shop-left-sidebar.html" class="single-banner">
+                    <a href="{% url 'products:shop' cat_id %}" class="single-banner">
                         <img src="{{cat_image}}" alt="">
                         <div class="item-disc">
                             <span class="item-title">{{cat_name}}</span>
-                            <span class="item-amount">{{cat_items}}</span>
+                            <span class="item-amount">{{cat_items}} ITEMS</span>
                         </div>
                     </a>
                 </div>
@@ -91,7 +91,7 @@
                         <img src="{% static 'assets/images/banner/2.jpg' %}" alt="">
                         <div class="item-disc">
                             <h2 class="title">#bestsellers</h2>
-                            <a href="shop-left-sidebar.html" class="shop-link">Shop Now</a>
+                            <a href="{% url 'products:shop' 1 %}" class="shop-link">Shop Now</a>
                         </div>
                     </div>
                 </div> {% endcomment %}
@@ -194,7 +194,7 @@
                                                     
                                                     {% with product_image=product.productimage_set.first %}
                                                         {% if product_image %}
-                                                            <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                            <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                                         {% else %}
                                                             <p>No image available</p>
                                                         {% endif %}
@@ -202,7 +202,7 @@
 
                                                     {% with product_image=product.productimage_set.first %}
                                                         {% if product_image %}
-                                                        <img class="hover-image" src="{{ product_image.image.url }}"
+                                                        <img style="width:270px;height:310px !important" class="hover-image" src="{{ product_image.image.url }}"
                                                         alt="{{ product.name }}" />
                                                         {% else %}
                                                             <p>No image available</p>
@@ -214,23 +214,31 @@
                                                     <span class="new"></span>
                                                 </span>
                                                 <div class="actions">
-                                                    <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
-                                                            class="pe-7s-like"></i></a>
+                                                    {% if  product.id in wishlist_products %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist active" title="Wishlist"><i
+                                                            class="pe-7s-like" style="color:#ffffff"></i></a>
+                                                    {% else %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
+                                                        class="pe-7s-like"></i></a>
+                                                    {% endif %}
                                                     {% comment %} <a href="#" id="click_sp" class="action quickview" data-product-id="{{ product.id }}" 
                                                         title="Quick view" data-bs-toggle="modal"
                                                         data-bs-target="#exampleModal"><i class="pe-7s-search"></i></a> {% endcomment %}
                                                     {% comment %} <a href="compare.html" class="action compare" title="Compare"><i
                                                             class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                                 </div>
-                                                <button title="Add To Cart" class=" add-to-cart">Add
-                                                    To Cart</button>
-                                            </div>
+                                                {% if product.quantity > 0 %}
+                                                    <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
+                                                {% else %}
+                                                    <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                                {% endif %}
+                                                </div>
                                             <div class="content">
                                                 <span class="ratings">
                                                     <span class="rating-wrap">
-                                                        <span class="star" style="width: 100%"></span>
+                                                        <span class="star" style="width: {{product.avg_rating}}%"></span>
                                                     </span>
-                                                    <span class="rating-num">( 5 Review )</span>
+                                                    <span class="rating-num">( {{ product.rating_count }} Review )</span>
                                                 </span>
                                                 <h5 class="title"><a href="single-product.html">{{product.name}}
                                                     </a>
@@ -258,7 +266,7 @@
                                             <a href="{% url 'products:shop_product_detail' product.id %}" class="image">
                                                 {% with product_image=product.productimage_set.first %}
                                                     {% if product_image %}
-                                                        <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                        <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                                     {% else %}
                                                         <p>No image available</p>
                                                     {% endif %}
@@ -266,7 +274,7 @@
 
                                                 {% with product_image=product.productimage_set.first %}
                                                     {% if product_image %}
-                                                    <img class="hover-image" src="{{ product_image.image.url }}"
+                                                    <img style="width:270px;height:310px !important" class="hover-image {% if product.quantity > 0 %}{% else %} out-of-stock {% endif %}" src="{{ product_image.image.url }}"
                                                     alt="{{ product.name }}" />
                                                     {% else %}
                                                         <p>No image available</p>
@@ -277,23 +285,31 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                {% if  product.id in wishlist_products %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist active" title="Wishlist"><i
+                                                            class="pe-7s-like" style="color:#ffffff"></i></a>
+                                                    {% else %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
+                                                    {% endif %}
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
                                                     data-bs-target="#exampleModal"><i class="pe-7s-search"></i></a> {% endcomment %}
                                                 {% comment %} <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
-                                        </div>
+                                            {% if product.quantity > 0 %}
+                                            <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
+                                            {% else %}
+                                                <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                            {% endif %}  
+                                      </div>
                                         <div class="content">
                                             <span class="ratings">
                                                 <span class="rating-wrap">
-                                                    <span class="star" style="width: 100%"></span>
+                                                    <span class="star" style="width:  {{product.avg_rating}}%"></span>
                                                 </span>
-                                                <span class="rating-num">( 5 Review )</span>
+                                                <span class="rating-num">( {{ product.rating_count }} Review )</span>
                                             </span>
                                             <h5 class="title"><a href="single-product.html">{{product.name}}
                                                 </a>
@@ -326,7 +342,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -334,8 +350,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <a href="" title="View Details" class=" add-to-cart">View Details</a>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -368,7 +383,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -376,8 +391,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -411,7 +425,7 @@
                                                 <span class="sale">-7%</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -419,8 +433,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -452,7 +465,7 @@
                                                 <span class="new">Sale</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -460,8 +473,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -494,7 +506,7 @@
                                                 <span class="new">New</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -502,8 +514,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -534,7 +545,7 @@
                                             <span class="badges">
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -542,8 +553,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -575,7 +585,7 @@
                                             <span class="badges">
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -583,8 +593,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -615,7 +624,7 @@
                                                 <span class="new">Sale</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
                                                 <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
@@ -623,8 +632,7 @@
                                                 <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
+                                            <button title="Add To Cart" class=" add-to-cart">View Details</button>
                                         </div>
                                         <div class="content">
                                             <span class="ratings">
@@ -657,7 +665,7 @@
                                             <a href="{% url 'products:shop_product_detail' product.id %}" class="image">
                                                 {% with product_image=product.productimage_set.first %}
                                                     {% if product_image %}
-                                                        <img src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                                        <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                                     {% else %}
                                                         <p>No image available</p>
                                                     {% endif %}
@@ -665,7 +673,7 @@
 
                                                 {% with product_image=product.productimage_set.first %}
                                                     {% if product_image %}
-                                                    <img class="hover-image" src="{{ product_image.image.url }}"
+                                                    <img  style="width:270px;height:310px !important" class="hover-image" src="{{ product_image.image.url }}"
                                                     alt="{{ product.name }}" />
                                                     {% else %}
                                                         <p>No image available</p>
@@ -676,23 +684,31 @@
                                                 <span class="new">discounted</span>
                                             </span>
                                             <div class="actions">
-                                                <a href="wishlist.html" class="action wishlist" title="Wishlist"><i
+                                                {% if  product.id in wishlist_products %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist active" title="Wishlist"><i
+                                                            class="pe-7s-like" style="color:#ffffff"></i></a>
+                                                    {% else %}
+                                                    <a href="{% url 'products:wishlist' %}?id={{product.id}}" class="action wishlist" title="Wishlist"><i
                                                         class="pe-7s-like"></i></a>
+                                                    {% endif %}
                                                 {% comment %} <a href="#" class="action quickview" data-link-action="quickview"
                                                     title="Quick view" data-bs-toggle="modal"
                                                     data-bs-target="#exampleModal"><i class="pe-7s-search"></i></a> {% endcomment %}
                                                 {% comment %} <a href="compare.html" class="action compare" title="Compare"><i
                                                         class="pe-7s-refresh-2"></i></a> {% endcomment %}
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart</button>
-                                        </div>
+                                            {% if product.quantity > 0 %}
+                                            <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">View Details</a>
+                                            {% else %}
+                                                <a href="{% url 'products:shop_product_detail' product.id %}" title="View Details" class=" add-to-cart">Out of stock</a>
+                                            {% endif %}  
+                                            </div>
                                         <div class="content">
                                             <span class="ratings">
                                                 <span class="rating-wrap">
-                                                    <span class="star" style="width: 100%"></span>
+                                                    <span class="star" style="width: {{product.avg_rating}}%"></span>
                                                 </span>
-                                                <span class="rating-num">( 5 Review )</span>
+                                                <span class="rating-num">( {{ product.rating_count }} Review )</span>
                                             </span>
                                             <h5 class="title"><a href="single-product.html">Women's Elizabeth Coat
                                                 </a>
@@ -754,136 +770,50 @@
             <div class="testimonial-wrapper swiper-container">
                 <div class="swiper-wrapper">
                     <!-- Slider Single Item -->
+                    {% for i in rating %}
                     <div class="swiper-slide">
                         <div class="testi-inner">
                             <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
+                                {% if i.rating == 1 %}
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 2 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 3 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% elif i.rating == 4 %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% else %}
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                {% endif %}
                             </div>
                             <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
+                                <p>{{i.message}}
                                 </p>
                             </div>
                             <div class="testi-author">
                                 <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/1.png' %}" alt="">
+                                    <img src="{% static 'assets/images/default.png' %}" alt="">
                                 </div>
                                 <div class="author-name">
-                                    <h4 class="name">Daisy Morgan</h4>
+                                    <h4 class="name">{{i.name}}</h4>
                                     <span class="title">Happy Customer</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                     <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/2.png' %}" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Leah Chatman</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/3.png' %}" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Reyna Chung</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/1.png' %}" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Daisy Morgan</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
-                    <div class="swiper-slide">
-                        <div class="testi-inner">
-                            <div class="reating-wrap">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="testi-content">
-                                <p>Lorem ipsum dolor sit amet, consect adipisici elit, sed do eiusmod tempol incididunt
-                                    ut labore et dolore magna aliqua. Ut enim ad minim veniamfhq nostrud exercitation.
-                                </p>
-                            </div>
-                            <div class="testi-author">
-                                <div class="author-img">
-                                    <img src="{% static 'assets/images/testimonial-image/2.png' %}" alt="">
-                                </div>
-                                <div class="author-name">
-                                    <h4 class="name">Reyna Chung</h4>
-                                    <span class="title">Happy Customer</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Slider Single Item -->
+
                 </div>
             </div>
             <!-- Slider Start -->
