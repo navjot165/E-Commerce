@@ -13,6 +13,7 @@ def blog_list(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
@@ -38,6 +39,7 @@ def blog_details(request,id):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:

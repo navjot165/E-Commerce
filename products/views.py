@@ -1,4 +1,5 @@
 from .models import *
+from django.db.models import F
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Avg , Count
@@ -17,6 +18,7 @@ def shop_list(request,id):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
@@ -93,6 +95,7 @@ def shop_product_detail(request,id):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
@@ -107,12 +110,12 @@ def shop_product_detail(request,id):
     except:
         cart_list = None
 
-    product = Product.objects.get(id = id )
+    products = Product.objects.get(id = id )
 
-    average_rate = Ratings.objects.filter(product=product)[0:3]
-    rating_counts = Ratings.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+    average_rate = Ratings.objects.filter(product=products)[0:3]
+    rating_counts = Ratings.objects.filter(product=products).aggregate(Avg('rating'))['rating__avg']
 
-    related_product = Product.objects.filter(sub_category = product.sub_category ).annotate(
+    related_product = Product.objects.filter(sub_category = products.sub_category ).annotate(
         rating_count=Count('ratings'),
         avg_rating=Avg('ratings__rating')
     ).order_by('-id')[0:6]
@@ -130,7 +133,7 @@ def shop_product_detail(request,id):
     except:
         related_product.average_rating = 0
         related_product.count = 0
-    return render(request, 'products/single-product.html', { "data":product,"related_product":related_product,"wish_list":wish_list,
+    return render(request, 'products/single-product.html', { "data":products,"related_product":related_product,"wish_list":wish_list,
                "average_rate":average_rate,"rating_counts":rating_counts,"wishlist_products":wishlist_products,"cart_list":cart_list,"shop_data":shop_data })
 
 def cart_details(request):
@@ -144,6 +147,7 @@ def cart_details(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
@@ -153,15 +157,21 @@ def cart_details(request):
     try:
         cart_total = 0
         grand_total = 0
-        shipping_price = 100
         cart_list = CartItem.objects.filter(created_by = request.user)
         for i in cart_list:
             cart_total += i.total_price
-        grand_total = cart_total + shipping_price
+        grand_total = cart_total 
+        gst_price = ( grand_total * 18 ) / 100
+        grand_total = grand_total + gst_price
+        if grand_total > 350:
+            shipping_price = 100
+        else:
+            shipping_price = 0
+        grand_total = grand_total + shipping_price
     except:
         cart_list = None
     if cart_list:
-        return render(request, 'products/cart.html',{"wish_list":wish_list,"cart_list":cart_list,"grand_total":grand_total,
+        return render(request, 'products/cart.html',{"wish_list":wish_list,"cart_list":cart_list,"grand_total":grand_total,"gst_price":gst_price,
                                                     "shipping_price":shipping_price,"cart_total":cart_total,"shop_data":shop_data})
     else:
         return render(request, 'products/empty-cart.html',{"wish_list":wish_list})
@@ -179,9 +189,6 @@ def add_to_cart(request,id):
                 messages.success(request, 'Please select size first')
                 return redirect('products:shop_product_detail',product.id)
 
-            if not request.POST.get("color"):
-                messages.success(request, 'Please select color first')
-                return redirect('products:shop_product_detail' , product.id )
 
             if product.discount:
                 price = product.discount
@@ -198,7 +205,8 @@ def add_to_cart(request,id):
                                                    total_price = int(request.POST.get("quantity")) * int(price),
                                                    quantity = request.POST.get("quantity"),
                                                    created_by = request.user
-                                                   )
+                                                   )            
+                
 
             messages.success(request, 'Product added to cart successfully')
             return redirect('products:cart_details')
@@ -207,7 +215,7 @@ def add_to_cart(request,id):
         return redirect('products:shop_product_detail' , product.id)
 
 def clear_one_cart(request,id):
-    cart = Cart.objects.get(id = id)
+    cart = CartItem.objects.get(id = id)
     if cart:
         cart.delete()
     messages.success(request, 'Product removed from your cart successfully')
@@ -231,6 +239,7 @@ def wishlist_details(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     if request.user.is_authenticated:
@@ -259,6 +268,7 @@ def user_wishlist(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
@@ -282,14 +292,18 @@ def checkout(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
     try:
         cart = Cart.objects.get(created_by = request.user)
+    except:
+        cart = None
+
+    try:
         coupan = Coupans.objects.get(id = cart.run_time_coupan)
     except:
         coupan = None
-        cart = None
     try:
         cart_list = CartItem.objects.filter(created_by = request.user)
         grand_total = 0
@@ -297,8 +311,13 @@ def checkout(request):
         cart_list = CartItem.objects.filter(created_by = request.user)
         for i in cart_list:
             grand_total += i.total_price
+        if grand_total > 350:
+            shipping_price = 100
+        else:
+            shipping_price = 0
+        gst = (grand_total * 18 ) / 100
+        total = grand_total + gst + shipping_price
         
-        total = grand_total + shipping_price
         try:
             discounted_price = ( float(total) * float(coupan.percentage) ) / 100
         except:
@@ -313,24 +332,27 @@ def checkout(request):
         wish_list = Wishlist.objects.filter(created_by = request.user)
     except:
         wish_list = None
-    print(discounted_t,">>>>>>>>>>>>.",discounted_price)
-    return render(request, 'products/checkout.html',{"wish_list":wish_list,"rating":rating,"cart_list":cart_list,"cart":cart,"discounted_price":discounted_price,
-                                               "discounted_t":discounted_t, "total":total,"shipping_price":shipping_price,"shop_data":shop_data,"coupan":coupan})
+    cart.gst_amount = gst
+    cart.save()
+    return render(request, 'products/checkout.html',{"wish_list":wish_list,"rating":rating,"cart_list":cart_list,"cart":cart,"discounted_price":round(discounted_price,2) if discounted_price  else None,
+                                               "gst":gst,"discounted_t":round(discounted_t,2) if discounted_t else None , "total":total,"shipping_price":shipping_price,"shop_data":shop_data,"coupan":coupan})
 
 def placeOrder(request):
     if request.method =="POST":
         cart_t = Cart.objects.get(created_by = request.user)
+
         cart = CartItem.objects.filter(created_by = request.user)
         order = Order.objects.create(first_name = request.POST.get("first_name"),
-        last_name = request.POST.get("last_name"),
-        email = request.POST.get("email"),
-        phone = request.POST.get("phone"),
-        address = request.POST.get("address") + " " + request.POST.get("address1")  ,
-        state = request.POST.get("state"),
-        city = request.POST.get("city"),
-        zipcode = request.POST.get("zipcode"),
-        message = request.POST.get("message"),
-        created_by = request.user
+            last_name = request.POST.get("last_name"),
+            email = request.POST.get("email"),
+            phone = request.POST.get("phone"),
+            address = request.POST.get("address") + " " + request.POST.get("address1")  ,
+            state = request.POST.get("state"),
+            city = request.POST.get("city"),
+            zipcode = request.POST.get("zipcode"),
+            message = request.POST.get("message"),
+            created_by = request.user,
+            gst_amount = cart_t.gst_amount
         )
         try:
             print("OKKKKKKKKKKKKKKKKKKKKKKKKKKK")
@@ -339,8 +361,11 @@ def placeOrder(request):
             grand_totals = 0
             for i in cart_list:
                 grand_totals += i.total_price
-        
-            total = grand_totals + 100
+            if grand_totals > 350:
+                p = 100
+            else:
+                p = 0
+            total = float(grand_totals) + float(p) + float(order.gst_amount)
             try:
                 discounted_price = ( float(total) * float(coupan.percentage) ) / 100
             except:
@@ -361,10 +386,13 @@ def placeOrder(request):
             cart_list = CartItem.objects.filter(created_by = request.user)
             for i in cart_list:
                 grand_totals += i.total_price
-            total = grand_totals + 100
-            order.grand_total = total
+            if grand_totals > 350:
+                p = 100
+            else:
+                p =0
+            total = grand_totals + p + float(order.gst_amount)
+            order.grand_total = float( total )
             order.save()
-            print(grand_totals,"*****")
         for i in cart:
             order_items = OrderItems.objects.create(
                                                     order = order,
@@ -372,7 +400,6 @@ def placeOrder(request):
                                                     created_by = request.user,
                                                     quantity = i.quantity,
                                                     size = i.size,
-                                                    color = i.color,
                                                     price = i.price,
                                                     total_price = i.total_price,
 
@@ -391,17 +418,23 @@ def placeOrder(request):
         messages.success(request, 'Your order is placed successfully')
         return redirect('frontend:index')
 
+
 def rating(request,id):
     product = Product.objects.get(id = id)
-    if request.method == "POST":
-        rating = Ratings.objects.create(product = product , name = request.POST.get("name"),email=request.POST.get("name"),
-                                        message = request.POST.get("message"),rating = request.POST.get("rating") )
-        
-        messages.success(request, 'Rating given successfully')
-    return redirect('products:shop_product_detail' , product.id )
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            rating = Ratings.objects.create(product = product , name = request.POST.get("name"),email=request.POST.get("name"),
+                                            message = request.POST.get("message"),rating = request.POST.get("rating") )
+            
+            messages.success(request, 'Rating given successfully')
+        return redirect('products:shop_product_detail' , product.id )
+    else:
+        messages.success(request, 'Please login first to proceed further!')
+        return redirect('frontend:index' )
 
 def update_cart(request):
     if request.method == "POST" and request.is_ajax():
+        carts = Cart.objects.get(created_by = request.user)
         cart_id = request.POST.get("cart_id")
         newQuantity = request.POST.get("newQuantity")
         cart = CartItem.objects.get(id = int(cart_id))
@@ -409,7 +442,13 @@ def update_cart(request):
             cart.quantity = int(request.POST.get("newQuantity"))
             cart.total_price = int(request.POST.get("newQuantity")) * int(cart.price)
             cart.save()
-            response_data = {'message': 'Cart item updated successfully'}
+            gt = 0
+            cart_items = CartItem.objects.filter(cart=carts)
+         
+            for i in cart_items:
+                print(i.price)
+                gt = int(i.quantity) * int(i.price)
+            response_data = {'message': 'Cart item updated successfully','total':gt}
             return JsonResponse(response_data, status=200)
         else:
             response_data = {'message': 'Cart item updated successfully'}
@@ -418,16 +457,18 @@ def update_cart(request):
         response_data = {'message': 'Invalid request'}
         return JsonResponse(response_data, status=400)
 
-
 def apply_promocode(request):
     if request.method == "POST" and request.is_ajax():
         promo = request.POST.get("promo")
         promocode = Coupans.objects.filter(name = promo).last()
         if promocode:
-            response_data = {'message': 'found',"name":promocode.name,"percentage":promocode.percentage}
             cart = Cart.objects.get(created_by = request.user)
             cart.run_time_coupan = promocode.id
             cart.save()
+            cart_items = CartItem.objects.filter(cart=cart)
+            # cart_items_with_total_price = cart_items.annotate(total_price=F('quantity') * F('price'))
+
+            response_data = {'message': 'found',"name":promocode.name,"percentage":promocode.percentage,'total':"cart_items_with_total_price"}
             return JsonResponse(response_data, status=200)
         else:
             response_data = {'message': 'not found'}

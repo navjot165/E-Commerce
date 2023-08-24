@@ -26,7 +26,7 @@ def index(request):
         except:
             wish_list = None
 
-        all_products = Product.objects.all().annotate(
+        all_products = Product.objects.filter().annotate(
             rating_count=Count('ratings'),
             avg_rating=Avg('ratings__rating')
         ).order_by('id')[0:8]
@@ -37,7 +37,7 @@ def index(request):
                 product.avg_rating = 0
 
 
-        new_products = Product.objects.all().annotate(
+        new_products = Product.objects.filter(discount__isnull = True ).annotate(
             rating_count=Count('ratings'),
             avg_rating=Avg('ratings__rating')
         ).order_by('-id')[0:8]
@@ -67,6 +67,7 @@ def index(request):
             print(sub_cats)
             shop_data.append({
                 "name":i.name,
+                "id":i.id,
                 "sub_cat":s_c
             })
         
@@ -94,6 +95,7 @@ def about(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
         
@@ -119,6 +121,7 @@ def contact(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
         
@@ -157,6 +160,7 @@ def my_account(request):
         print(sub_cats)
         shop_data.append({
             "name":i.name,
+            "id":i.id,
             "sub_cat":s_c
         })
         

@@ -62,7 +62,7 @@ class Product(models.Model):
     other_info = models.CharField(max_length = 500)
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     sizes = models.ManyToManyField(Size)
-    colors = models.ManyToManyField(Color)
+    # colors = models.ManyToManyField(Color)
     rating = models.PositiveIntegerField(default = 0)
 
     def calculate_discount_percentage(self):
@@ -120,6 +120,8 @@ class Cart(models.Model):
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
     run_time_coupan = models.PositiveIntegerField(blank=True,null=True)
     coupans = models.ForeignKey('Coupans',blank=True,null=True,on_delete=models.SET_NULL)
+    gst = models.CharField(max_length = 5,default='18%')
+    gst_amount =  models.CharField(max_length = 500)
 
     class Meta:
         managed = True
@@ -152,6 +154,12 @@ class Order(models.Model):
     message = models.CharField(max_length = 500)
     discounted_price = models.PositiveIntegerField(blank=True,null=True)
     grand_total = models.PositiveIntegerField(blank=True,null=True)
+    
+    gst = models.CharField(max_length=5,default="18%")
+    gst_amount = models.CharField(max_length=5,)
+    
+    grand_total = models.PositiveIntegerField(blank=True,null=True)
+    
     coupan = models.ForeignKey('Coupans',on_delete=models.CASCADE,blank=True,null=True)
     status = models.PositiveIntegerField(default=ADMIN,choices=ORDER_STATUS,null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True,null=True, blank=True)
@@ -168,7 +176,6 @@ class OrderItems(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     quantity = models.CharField(max_length = 500)
     size = models.CharField(max_length = 500)
-    color = models.CharField(max_length = 500)
     price = models.PositiveIntegerField(default=1)
     total_price = models.PositiveIntegerField(default=1)
 

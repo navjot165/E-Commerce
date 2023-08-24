@@ -144,7 +144,7 @@
                                                 
                                         </td>
                                         <td class="product-name"><a href="{% url 'products:shop_product_detail' i.product.id %}">{{i.product.name}}</a></td>
-                                        <td class="product-price-cart">$<span id="amount{{i.id}}" class="amount">{{i.price}}</span></td>
+                                        <td class="product-price-cart">₹<span id="amount{{i.id}}" class="amount">{{i.price}}</span></td>
                                         <td class="product-quantity">
                                             {% comment %} <div class="cart-plus-minus">
                                                 <input onclick="UpdatePrice({{i.id}})" class="cart-plus-minus-box" type="text" name="qtybutton"
@@ -154,7 +154,7 @@
                                                 <input class="cart-plus-minus-box" onchange="UpdatePrice({{i.id}})" id="{{ i.id }}" type="text" name="qtybutton" value="{{i.quantity}}" />
                                             </div>
                                         </td>
-                                        <td class="product-subtotal">$<span id="price{{i.id}}">{{i.total_price}}</span></td>
+                                        <td class="product-subtotal">₹<span id="price{{i.id}}">{{i.total_price}}</span></td>
                                         <td class="product-remove">
                                             <a onclick="return confirm('Are you sure you want to delete this product?')" href="{% url 'products:remove_to_cart' i.id %}"><i class="fa fa-times"></i></a>
                                         </td>
@@ -238,19 +238,16 @@
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                 </div>
-                                <h5>Total products <span id="totalproduct" >${{cart_total}}</span></h5>
-                                <h5>Shipping price <span id="shipingcost">${{shipping_price}}</span></h5>
+                                <h5>Total products price <span id="totalproduct" >{{cart_total}}</span></h5>
                                 
-                                {% comment %} <div class="total-shipping">
-                                    <h5>Total shipping</h5>
-                                    <ul>
-                                        <li><input type="checkbox" /> Standard <span>$20.00</span></li>
-                                        <li><input type="checkbox" /> Express <span>$30.00</span></li>
-                                    </ul>
-                                </div> {% endcomment %}
+                                <h5>Shipping price <span id="shipingcost">₹{{shipping_price}}</span></h5>
+                                
+                                <h5>GST 18% <span id="gst_price" >{{gst_price}}</span></h5>
+                                
+                               
                                 <h5 id="p_c" class=" d-none">Promocode <span style="color:red" id="p_n"></span></h5>
-                                <h5 id="hdp" class="d-none">Discount <span id="hdp1">$</span></h5>
-                                <h5 class="grand-totall-title ">Grand Total <span class="" id="grandTotal">${{grand_total}} </span></h5>
+                                <h5 id="hdp" class="d-none">Discount <span id="hdp1">₹</span></h5>
+                                <h5 class="grand-totall-title ">Grand Total <span class="" id="grandTotal">₹{{grand_total}} </span></h5>
 
                                 <h5 id="fdp" class="grand-totall-title d-none">Final Discounted Price <span id="final_discpunted_price"></span></h5>
                                 <a href="{% url 'products:checkout' %}">Proceed to Checkout</a>
@@ -315,19 +312,32 @@
 
     {% include 'frontend/includes/footer.html' %}
     <script>
-        function calculateGrandTotal() {
-            let grandTotal = 0;
-            var shipping_cost =  document.getElementById('shipingcost').innerHTML
+        calculate gst(){
+            var total = document.getElementById('grandTotal').innerHTML
+
+        }
+    </script>
+    <script>
+        function calculateGrandTotal(total) {
+            if (total > 350 ){
+                var shipping_cost = "₹100"
+                var s = 100
+                
+            }else{
+                var shipping_cost = "₹0"
+                var s = 0
+            }
+            let grandTotal = total;
             var shipping_cost = shipping_cost.substr(1)
-            console.log(shipping_cost,">>>>>>>")
-            $(".product-subtotal").each(function() {
-                grandTotal += parseFloat($(this).text().substr(1)); 
-                grandTotals = grandTotal 
-            });
-            const shippingCost = parseFloat($("#shipingcost").text().replace("$", ""));
-            grandTotal += shippingCost;
-            $("#grandTotal").text(grandTotal.toFixed(2) );
-            $("#totalproduct").text("$" + (grandTotals.toFixed(2) )  );   
+            $('#shipingcost').text("₹"+shipping_cost)
+            grandTotals = total 
+            var gst = ( grandTotal.toFixed(2) * 18 ) / 100
+
+            grandTotal = total + gst + s
+
+            $('#gst_price').text("₹" + gst)
+            $("#grandTotal").text("₹" + grandTotal.toFixed(2));
+            $("#totalproduct").text("₹" + (grandTotals.toFixed(2)));   
         }
         function UpdatePrice(id){
             var ids = `${id}`
@@ -349,7 +359,8 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}',  // Ensure CSRF token is included
                 },
                 success: function(response) {
-                    calculateGrandTotal()
+                    console.log(response)
+                    calculateGrandTotal(response.total)
                     // Update any necessary UI elements
                 },
                 error: function(error) {
@@ -379,11 +390,10 @@
                     document.getElementById('p_n').innerHTML = response.name
                     var percentage = response.percentage
                     var grand_total =  document.getElementById('grandTotal').innerHTML
-
                     var discounted_price = ( parseFloat(grand_total.substr(1)) * parseFloat(response.percentage) ) / 100
-                    document.getElementById('hdp1').innerHTML = discounted_price
+                    document.getElementById('hdp1').innerHTML = discounted_price.toFixed(2)
                     var final_result = parseFloat(grand_total.substr(1)) - parseFloat(discounted_price)
-                    document.getElementById('final_discpunted_price').innerHTML =  final_result
+                    document.getElementById('final_discpunted_price').innerHTML =  final_result.toFixed(2)
                 },
                 error: function(error) {
                     if (value == "" || value == " " ) {

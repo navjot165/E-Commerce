@@ -43,6 +43,19 @@
     .rating > input:checked ~ label:hover ~ label {
         color: #FECE31;
     }
+    .strikethrough {
+        text-decoration: line-through;
+        position: relative;
+      }
+      
+      .strikethrough::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        border-top: 1px solid black; /* Adjust color and style as needed */
+      }
 </style>
 
     <!-- breadcrumb-area start -->
@@ -74,25 +87,31 @@
                         <div class="swiper-wrapper">
                            
                             
-                            <div class="swiper-slide zoom-image-hover">
-                                <img {% if data.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" class="img-responsive m-auto" src="{% static 'assets/images/brand-logo/1.png' %}"
-                                    alt="">
-                            </div>
+                            
+                            {% for image in data.productimage_set.all %}
+                                <div class="swiper-slide zoom-image-hover">
+                                    <img id="main-image"  style="width:270px;height:310px !important" class="img-responsive m-auto" src="{{image.image.url}}"
+                                        alt="">
+                                </div>
+                            {% endfor %}
                             
                             
                         </div>
                     </div>
+                    <div class="thumbnail-images">
                     <div class="swiper-container zoom-thumbs mt-3 mb-3">
                         <div class="swiper-wrapper">
                            
-                            
-                            <div class="swiper-slide">
-                                <img class="img-responsive m-auto {% if data.quantity > 0 %}{% else %} out-of-stock {% endif %} " src="{% static 'assets/images/brand-logo/1.png' %}"
-                                    alt="">
-                            </div>
+                            {% for image in data.productimage_set.all %}
+                                <div class="swiper-slide">
+                                    <img class="thumbnail img-responsive m-auto {% if data.quantity > 0 %}{% else %} out-of-stock {% endif %}" data-image="{{ image.image.url }}" src="{{image.image.url}}"
+                                        alt="">
+                                </div>
+                            {% endfor %}
                             
                             
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
@@ -102,9 +121,10 @@
                             <ul>
                                 <li class="old-price not-cut">
                                     {% if data.discount %} 
-                                        <span >${{data.discount}}</span>
+                                        <span class="strikethrough" >₹{{data.price}}</span>
+                                        <span >₹{{data.discount}}</span>
                                     {% else %}
-                                        <span >${{data.price}}</span>
+                                        <span >₹{{data.price}}</span>
                                     {% endif %}
                                 </li>
                             </ul>
@@ -139,26 +159,15 @@
                             <span class="read-review"><a class="reviews" href="#">( {{average_rate.count}} Customer Review )</a></span>
                         </div>
                         {% endif %}
-                        <div class="pro-details-color-info d-flex align-items-center">
-                            <span>Color</span>
-                            <div class="pro-details-color">
-                                <ul>
-                                    {% comment %} <li><a class="active-color yellow" href="#"></a></li> {% endcomment %}
-                                    {% for size in data.colors.all %}
-                                    <span class="d-none" id="color{{size.id}}">{{ size.code }} </span>
-                                    <li><a onclick="addColor({{size.id}})" class="" href="#" style="background-color:{{size.code}} !important"></a></li>
-                                {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+        
 
                         <div class="pro-details-size-info d-flex align-items-center">
                             <span>Size</span>
                             <div class="pro-details-size">
                                 <ul>
                                     {% for size in data.sizes.all %}
-                                    <span class="d-none" id="size{{size.id}}">{{ size.name }} </span>
-                                        <li><a  onclick="addSize({{size.id}})" class="active-size gray" href="#">{{ size.name }}</a></li>
+                                    <span  class="d-none ml-3" id="size{{size.id}}">{{ size.name }} </span>
+                                        <li><a  onclick="addSize({{size.id}})" class="active-size gray ml-3" href="#">{{ size.name }}</a></li>
                                     {% endfor %}
                                    
                                 </ul>
@@ -375,7 +384,7 @@
                                 <a href="{% url 'products:shop_product_detail' product.id %}" class="image">
                                     {% with product_image=product.productimage_set.first %}
                                     {% if product_image %}
-                                        <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} src="{{ product_image.image.url }}" alt="{{ product.name }}" />
+                                        <img {% if product.quantity > 0 %}{% else %} class="out-of-stock" {% endif %} style="width:270px;height:310px !important" src="{{ product_image.image.url }}" alt="{{ product.name }}" />
                                     {% else %}
                                         <p>No image available</p>
                                     {% endif %}
@@ -383,7 +392,7 @@
 
                                 {% with product_image=product.productimage_set.first %}
                                     {% if product_image %}
-                                    <img class="hover-image {% if product.quantity > 0 %}{% else %}out-of-stock {% endif %}" src="{{ product_image.image.url }}"
+                                    <img class="hover-image {% if product.quantity > 0 %}{% else %}out-of-stock {% endif %}" style="width:270px;height:310px !important" src="{{ product_image.image.url }}"
                                     alt="{{ product.name }}" />
                                     {% else %}
                                         <p>No image available</p>
@@ -423,9 +432,10 @@
                                 <span class="price">
                                     <span class="new">
                                         {% if product.discount %} 
-                                        <span >${{product.discount}}</span>
+                                        <span class="old" >₹{{product.price}}</span>
+                                        <span >₹{{product.discount}}</span>
                                         {% else %}
-                                            <span >${{product.price}}</span>
+                                            <span class="new" >₹{{product.price}}</span>
                                         {% endif %}
                                     </span>
                                 </span>
@@ -472,15 +482,7 @@
         updateValue();
     </script>
 
-    <script>
-        function addColor(id){
-            var color_id_i = "color"
-            var final_id = color_id_i.concat(id)
-            var get_value = document.getElementById(final_id).innerHTML
 
-            var set = document.getElementById('color').value = get_value
-        }
-    </script>
     <script>
         function addSize(id){
             var color_id_i = "size"
@@ -488,4 +490,15 @@
             var get_value = document.getElementById(final_id).innerHTML
             var set = document.getElementById('size').value = get_value
         }
+    </script>
+    <script>
+        const mainImage = document.getElementById('main-image');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        console.log(mainImage);
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const newImage = this.getAttribute('data-image');
+                mainImage.src = newImage;
+            });
+        });
     </script>

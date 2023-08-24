@@ -42,10 +42,7 @@ class ProductImageInline(admin.TabularInline):
 
 
 class ProductForm(forms.ModelForm):
-    colors = forms.ModelMultipleChoiceField(
-        queryset=Color.objects.all(),
-        widget=CheckboxSelectMultiple,
-    )
+
     sizes = forms.ModelMultipleChoiceField(
         queryset=Size.objects.all(),
         widget=CheckboxSelectMultiple,
@@ -57,11 +54,10 @@ class ProductForm(forms.ModelForm):
 
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ('name','sub_category','quantity','price','materials','display_colors','created_on')
+    list_display = ('name','sub_category','quantity','price','materials','created_on')
     inlines = [ProductImageInline]
 
-    def display_colors(self, obj):
-        return ", ".join([color.code for color in obj.colors.all()])
+
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -74,7 +70,6 @@ class ProductAdmin(admin.ModelAdmin):
             img = img.crop((0, 0, target_size[0], target_size[1]))
             img.save(image_obj.image.path)
 
-    display_colors.short_description = 'Colors'
 
 
 class RatingsAdmin(admin.ModelAdmin):
@@ -103,7 +98,7 @@ class RatingsAdmin(admin.ModelAdmin):
 class OrderItemInline(admin.TabularInline):
     model = OrderItems
     extra = 0
-    readonly_fields = ['id','product', 'quantity','size','color','price','total_price','created_by','product_image']  # Add other fields if needed
+    readonly_fields = ['id','product', 'quantity','size','price','total_price','created_by','product_image']  # Add other fields if needed
     can_delete = False
     def product_image(self, instance):
         product_images = instance.product.productimage_set.all()
@@ -120,7 +115,7 @@ class OrderItemInline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id','first_name','last_name','email','grand_total','created_on')
-    readonly_fields = ('id','first_name','last_name','email','phone','created_on','address','city','state','zipcode','message','discounted_price','grand_total','coupan','created_by')
+    readonly_fields = ('id','first_name','last_name','email','phone','created_on','address','city','state','zipcode','message','discounted_price','gst_amount','grand_total','coupan','created_by')
     inlines = [OrderItemInline]
 
     def has_add_permission(self, request):

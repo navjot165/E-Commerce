@@ -51,9 +51,9 @@
                                         
                                         <ul class="d-block">
 
-                                            <li class="title"><a href="#">{{i.name}}</a></li>
+                                            <li class="title"><a href="{% url 'products:shop' i.id %}">{{i.name}}</a></li>
                                             {% for j in i.sub_cat %}
-                                                <li><a href="{% url 'products:shop' 1 %}">{{j.name}}</a></li>
+                                                <li><a href="{% url 'products:shop' i.id %}?cat={{j.id}}">{{j.name}}</a></li>
                                             {% endfor %}
                                             
                                         </ul>
@@ -81,29 +81,20 @@
                         data-bs-target="#loginActive">Sign In</a>
                         {% endif %}
                         
-                        <!-- Single Wedge Start -->
-                        {% comment %} <a href="#" class="header-action-btn" data-bs-toggle="modal" data-bs-target="#searchActive">
-                            <i class="pe-7s-search"></i>
-                        </a> {% endcomment %}
-                        <!-- Single Wedge End -->
-                        <!-- Single Wedge Start -->
-                        
-                        
                         <a href="#offcanvas-wishlist"
                             class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-like"></i>
-                            {% if wish_list.count > 0 %}
-                                <span class="header-action-num">{{wish_list.count}}</span>
-                            {% endif %}
+                            
+                                <span class="header-action-num">{% if wish_list.count > 0 %}{{wish_list.count}}{% else %}0{% endif %}</span>
                             <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
                         <!-- Single Wedge End -->
                         <a href="#offcanvas-cart"
                             class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-shopbag"></i>
-                            {% if wish_list.count > 0 %}
-                                <span class="header-action-num">{{cart_list.count}}</span>
-                            {% endif %}
+                            
+                                <span class="header-action-num">{% if cart_list.count > 0 %}{{cart_list.count}}{% else %} 0 {% endif %}</span>
+                            
                             
                             <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
